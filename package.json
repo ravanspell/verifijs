@@ -1,0 +1,23 @@
+{
+  "name": "validation",
+  "version": "1.0.0",
+  "description": "Agilent and light weight java script validation library for dummies. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ravanspell/js-validation.git"
+  },
+  "author": "ravanspell",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ravanspell/js-validation/issues"
+  },
+  "homepage": "https://github.com/ravanspell/js-validation#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
