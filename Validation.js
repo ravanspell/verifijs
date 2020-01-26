@@ -2,17 +2,18 @@ class Validation {
     constructor(request, object) {
         this.request = request;
         this.object = object;
+        // this.check(request, object);
     }
-    check(request, object) {
-        for (const property in object) {
-            let check = object[property].split('|');
+    check() {
+        for (const property in this.object) {
+            let check = this.object[property].split('|');
             let errors = check.map(type => {
                 if (type.includes(':')) {
                     let [func, amount] = type.split(':');
-                    return this[func](amount, request[property]);
+                    return this[func](amount, this.request[property]);
                 }
                 if (!type.includes(':')) {
-                    return this[type](request[property], property);
+                    return this[type](this.request[property], property);
                 }
             });
         }
@@ -55,12 +56,15 @@ class Validation {
             console.log(e.message);
         }
     }
+    email(email) {
+        var emailRegex = /^[A-Z0-9_'%=+!`#~$*?^{}&|-]+([\.][A-Z0-9_'%=+!`#~$*?^{}&|-]+)*@[A-Z0-9-]+(\.[A-Z0-9-]+)+$/i;
+        if (!emailRegex.test(email)) {
+            console.log('email validation failded');
+            return false;
+        };
+    }
     validateRegExp(regexp) {
         return new RegExp(regexp);
     }
-
-    // email() {
-    //     emailValidationRegEx = '^\S+@\S+$';
-    // }
 }
 module.exports = Validation;
