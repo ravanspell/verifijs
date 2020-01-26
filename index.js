@@ -4,13 +4,15 @@ const Validation = require('./Validation');
 //try {
 let reqObj = {
     name: 'kalo',
-    age: '',
-    address: ''
+    age: 45,
+    address: 'No234Knnimahara',
+    obj: '{"name":"kalo"'
 }
 new Validation(reqObj, {
-    name: 'required|string|max:1',
+    name: 'required|string|max:34',
     age: 'required|integer',
-    address: 'required|string'
+    address: 'required|string',
+    obj: 'required|json',
 });
 //} catch (error) {
     //console.log(error);

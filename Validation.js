@@ -4,7 +4,6 @@ class Validation {
         this.object = object;
         this.check(request, object);
     }
-
     check(request, object) {
         for (const property in object) {
             let check = object[property].split('|');
@@ -25,8 +24,6 @@ class Validation {
             console.log('string validation failded');
             return false;
         };
-        console.log('string validation passed');
-        return true;
     }
     integer(integer) {
         const regExp = this.validateRegExp('[^0-9]');
@@ -35,8 +32,6 @@ class Validation {
             return false;
 
         };
-        console.log('integer validation passed');
-        return true;
     }
     min(amount, value) {
         let intValue = parseInt(amount);
@@ -54,19 +49,19 @@ class Validation {
         if (!Object.keys(this.request).includes(key) || this.request[key] == '')
             console.log(`${key} required`);
     }
-    // email() {
-    //     emailValidationRegEx = '^\S+@\S+$';
-    // }
-    // json() {
-    //     try {
-    //         var dataObj = JSON.parse(data);
-    //         if (dataObj instanceof Object) data = dataObj;
-    //     } catch (e) {
-    //     }
-    // }
-
+    json(value) {
+        try {
+            JSON.parse(value);
+        } catch (e) {
+            console.log(e.message);
+        }
+    }
     validateRegExp(regexp) {
         return new RegExp(regexp);
     }
+
+    // email() {
+    //     emailValidationRegEx = '^\S+@\S+$';
+    // }
 }
 module.exports = Validation;
