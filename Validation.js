@@ -1,5 +1,11 @@
 class Validation {
     constructor(request, object) {
+        this.request = request;
+        this.object = object;
+        this.check(request, object);
+    }
+
+    check(request, object) {
         for (const property in object) {
             let check = object[property].split('|');
             let errors = check.map(type => {
@@ -8,7 +14,7 @@ class Validation {
                     return this[func](amount, request[property]);
                 }
                 if (!type.includes(':')) {
-                    return this[type]();
+                    return this[type](request[property], property);
                 }
             });
         }
@@ -43,6 +49,10 @@ class Validation {
         if (typeof value === 'string') {
             if (value.length >= intValue) console.log('maximum length exceeded');
         }
+    }
+    required(value, key) {
+        if (!Object.keys(this.request).includes(key) || this.request[key] == '')
+            console.log(`${key} required`);
     }
     // email() {
     //     emailValidationRegEx = '^\S+@\S+$';
