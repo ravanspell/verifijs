@@ -2,7 +2,6 @@ class Validation {
     constructor(request, object) {
         this.request = request;
         this.object = object;
-        this.check(request, object);
     }
     check(request, object) {
         for (const property in object) {

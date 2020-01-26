@@ -4,8 +4,9 @@
   "description": "Agilent and light weight java script validation library for dummies. ",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "test": "mocha Validation.test.js",
+    "dev": "nodemon index.js",
+    "test-dev": "nodemon --exec \"npm test\""
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,7 @@
   },
   "homepage": "https://github.com/ravanspell/js-validation#readme",
   "devDependencies": {
+    "mocha": "^7.0.1",
     "nodemon": "^2.0.2"
   }
 }
