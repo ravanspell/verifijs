@@ -17,7 +17,7 @@ const v = new Validation(reqObj, {
     email: 'required|email'
 });
 
-v.check();
+console.log(v.check());
 //} catch (error) {
     //console.log(error);
 //}

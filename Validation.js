@@ -4,64 +4,78 @@ class Validation {
         this.object = object;
         // this.check(request, object);
     }
-    async check() {
+    check() {
+        let errorArry = [];
         for (const property in this.object) {
             let check = this.object[property].split('|');
-            let errors = await Promise.all(check.map(type => {
+            check.forEach(type => {
                 if (type.includes(':')) {
                     let [func, amount] = type.split(':');
-                    return this[func](amount, this.request[property]);
+                    let validationState = this[func](amount, this.request[property]);
+                    if (!validationState.status)
+                        errorArry.push(validationState.message);
                 }
                 if (!type.includes(':')) {
-                    return this[type](this.request[property], property);
+                    let validationState = this[type](this.request[property], property);
+                    if (!validationState.status)
+                        errorArry.push(validationState.message);
                 }
-            }));
-            console.log(errors);
+            });
         }
+        return { validation: errorArry.length > 0 ? false : true, error: errorArry }
     }
-    async string(string) {
+    string(string) {
         const regExp = this.validateRegExp('[^A-Za-z0-9]+');
         if (regExp.test(string)) {
-            console.log('string validation failded');
-            return false;
+            return { status: false, message: "Error: Invalid string" };
         };
+        return { status: true };
     }
-    async integer(integer) {
+    integer(integer) {
         const regExp = this.validateRegExp('[^0-9]');
         if (regExp.test(`${integer}`)) {
-            console.log('integer validation failded');
-            return false;
+            return { status: false, message: "Error: Invalid integer" };
         };
+        return { status: true };
     }
-    async min(amount, value) {
+    min(amount, value) {
         let intValue = parseInt(amount);
         if (typeof value === 'string') {
-            if (value.length >= intValue) console.log('minimum');
+            if (value.length >= intValue) {
+                return { status: false, message: `Error: minimum string length is ${intValue}` };
+            }
         }
+        return { status: true };
     }
-    async max(amount, value) {
+    max(amount, value) {
         let intValue = parseInt(amount);
         if (typeof value === 'string') {
-            if (value.length >= intValue) console.log('maximum length exceeded');
+            if (value.length >= intValue) {
+                return { status: false, message: `Error: maximum string length is ${intValue}` };
+            };
         }
+        return { status: true };
     }
-    async required(value, key) {
-        if (!Object.keys(this.request).includes(key) || this.request[key] == '')
-            console.log(`${key} required`);
+    required(value, key) {
+        if (!Object.keys(this.request).includes(key) || this.request[key] == '') {
+            return { status: false, message: `Error: ${key} is required` };
+        }
+        return { status: true };
     }
-    async json(value) {
+    json(value) {
         try {
             JSON.parse(value);
+            return { status: true };
         } catch (e) {
-            console.log(e.message);
+            return { status: false, message: "Error: Invalid json string" };
         }
     }
-    async email(email) {
+    email(email) {
         var emailRegex = /^[A-Z0-9_'%=+!`#~$*?^{}&|-]+([\.][A-Z0-9_'%=+!`#~$*?^{}&|-]+)*@[A-Z0-9-]+(\.[A-Z0-9-]+)+$/i;
         if (!emailRegex.test(email)) {
-            console.log('email validation failded');
-            return false;
+            return { status: false, message: "Error: Invalid email" };
         };
+        return { status: true };
     }
     validateRegExp(regexp) {
         return new RegExp(regexp);
