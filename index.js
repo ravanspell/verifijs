@@ -1,30 +1,27 @@
 const Validation = require('./Validation');
 
-//const validationObj = new Validation();
-//try {
 let reqObj = {
     name: 'Klao',
     age: '',
     address: 'No234Knnimahara',
     obj: '{"name":"kalo"}',
-    email: 'ireshandj2@gmail.com'
+    email: 'ireshandj2@gmail.com',
+    id: 'f1277d16-5cb9-43f6-95ce-a5e22e12cdaa'
 }
-
-let messages = {
-    name_required: "This porparty is required man!"
+const messages = {
+    name_required: "This porparty is required"
 }
-const v = new Validation();
+const validation = new Validation();
 
-console.log(v.check(reqObj, {
+let status = validation.check(reqObj, {
     name: 'required|string|max:2',
     age: 'required|integer',
     address: 'required|string',
     obj: 'required|json',
-    email: 'required|email'
-}, messages));
-//} catch (error) {
-    //console.log(error);
-//}
+    email: 'required|email',
+    id: 'uuid'
+}, messages);
 
+console.log(status);
 
 

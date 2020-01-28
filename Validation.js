@@ -103,6 +103,16 @@ class Validation {
         };
         return { status: true };
     }
+    uuid(request, property, customMessage) {
+        const uuidRegExp = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
+        if (!uuidRegExp.test(request[property])) {
+            return {
+                status: false,
+                message: customMessage != undefined ? customMessage : "Error: Invalid uuid"
+            };
+        };
+        return { status: true };
+    }
     messageProcessor(messages, property, type) {
         let errorMessageField = Object.keys(messages).filter(messageKey => messageKey == `${property}_${type}` || messageKey == type);
         return messages[errorMessageField];
