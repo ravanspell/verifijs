@@ -3,21 +3,25 @@ const Validation = require('./Validation');
 //const validationObj = new Validation();
 //try {
 let reqObj = {
-    name: 'kalo',
-    age: 45,
+    name: 'Klao',
+    age: '',
     address: 'No234Knnimahara',
     obj: '{"name":"kalo"}',
     email: 'ireshandj2@gmail.com'
 }
-const v = new Validation(reqObj, {
-    name: 'required|string|max:34',
+
+let messages = {
+    name_required: "This porparty is required man!"
+}
+const v = new Validation();
+
+console.log(v.check(reqObj, {
+    name: 'required|string|max:2',
     age: 'required|integer',
     address: 'required|string',
     obj: 'required|json',
     email: 'required|email'
-});
-
-console.log(v.check());
+}, messages));
 //} catch (error) {
     //console.log(error);
 //}

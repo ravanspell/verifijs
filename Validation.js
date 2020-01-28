@@ -1,22 +1,26 @@
+/**
+ * Auther: Ireshan M Pathirana
+ * Licence: GNU Public Licence
+ * Usage: any java script freamwork
+ */
+
 class Validation {
-    constructor(request, object) {
-        this.request = request;
-        this.object = object;
-        // this.check(request, object);
-    }
-    check() {
+
+    check(request, checkObj, messages = {}) {
         let errorArry = [];
-        for (const property in this.object) {
-            let check = this.object[property].split('|');
+        for (const property in checkObj) {
+            let check = checkObj[property].split('|');
             check.forEach(type => {
                 if (type.includes(':')) {
                     let [func, amount] = type.split(':');
-                    let validationState = this[func](amount, this.request[property]);
+                    let customMessage = this.messageProcessor(messages, property, func);
+                    let validationState = this[func](amount, request[property], customMessage);
                     if (!validationState.status)
                         errorArry.push(validationState.message);
                 }
                 if (!type.includes(':')) {
-                    let validationState = this[type](this.request[property], property);
+                    let customMessage = this.messageProcessor(messages, property, type);
+                    let validationState = this[type](request, property, customMessage);
                     if (!validationState.status)
                         errorArry.push(validationState.message);
                 }
@@ -24,58 +28,67 @@ class Validation {
         }
         return { validation: errorArry.length > 0 ? false : true, error: errorArry }
     }
-    string(string) {
+    /**
+     * 
+     * @param {*} string string have to validate 
+     */
+    string(request, property, customMessage) {
         const regExp = this.validateRegExp('[^A-Za-z0-9]+');
-        if (regExp.test(string)) {
+        if (regExp.test(request[property])) {
             return { status: false, message: "Error: Invalid string" };
         };
         return { status: true };
     }
-    integer(integer) {
+    integer(request, property, customMessage) {
         const regExp = this.validateRegExp('[^0-9]');
-        if (regExp.test(`${integer}`)) {
+        if (regExp.test(`${request[property]}`)) {
             return { status: false, message: "Error: Invalid integer" };
         };
         return { status: true };
     }
-    min(amount, value) {
+    min(amount, value, customMessage) {
         let intValue = parseInt(amount);
         if (typeof value === 'string') {
             if (value.length >= intValue) {
-                return { status: false, message: `Error: minimum string length is ${intValue}` };
+                return { status: false, message: customMessage != undefined ? customMessage : `Error: minimum string length is ${intValue}` };
             }
         }
         return { status: true };
     }
-    max(amount, value) {
+    max(amount, value, customMessage) {
         let intValue = parseInt(amount);
         if (typeof value === 'string') {
             if (value.length >= intValue) {
-                return { status: false, message: `Error: maximum string length is ${intValue}` };
+                return { status: false, message: customMessage != undefined ? customMessage : `Error: maximum string length is ${intValue}` };
             };
         }
         return { status: true };
     }
-    required(value, key) {
-        if (!Object.keys(this.request).includes(key) || this.request[key] == '') {
-            return { status: false, message: `Error: ${key} is required` };
+    required(request, property, customMessage) {
+        console.log(customMessage);
+        if (!Object.keys(request).includes(property) || request[property] == '') {
+            return { status: false, message: customMessage != undefined ? customMessage : `Error: ${property} is required` };
         }
         return { status: true };
     }
-    json(value) {
+    json(request, property, customMessage) {
         try {
-            JSON.parse(value);
+            JSON.parse(request[property]);
             return { status: true };
         } catch (e) {
-            return { status: false, message: "Error: Invalid json string" };
+            return { status: false, message: customMessage != undefined ? customMessage : "Error: Invalid json string" };
         }
     }
-    email(email) {
+    email(request, property, customMessage) {
         var emailRegex = /^[A-Z0-9_'%=+!`#~$*?^{}&|-]+([\.][A-Z0-9_'%=+!`#~$*?^{}&|-]+)*@[A-Z0-9-]+(\.[A-Z0-9-]+)+$/i;
-        if (!emailRegex.test(email)) {
-            return { status: false, message: "Error: Invalid email" };
+        if (!emailRegex.test(request[property])) {
+            return { status: false, message: customMessage != undefined ? customMessage : "Error: Invalid email" };
         };
         return { status: true };
+    }
+    messageProcessor(messages, property, type) {
+        let errorMessageField = Object.keys(messages).filter(messageKey => messageKey == `${property}_${type}` || messageKey == type);
+        return messages[errorMessageField];
     }
     validateRegExp(regexp) {
         return new RegExp(regexp);
