@@ -28,21 +28,23 @@ class Validation {
         }
         return { validation: errorArry.length > 0 ? false : true, error: errorArry }
     }
-    /**
-     * 
-     * @param {*} string string have to validate 
-     */
     string(request, property, customMessage) {
         const regExp = this.validateRegExp('[^A-Za-z0-9]+');
         if (regExp.test(request[property])) {
-            return { status: false, message: "Error: Invalid string" };
+            return {
+                status: false,
+                message: customMessage != undefined ? customMessage : "Error: Invalid string"
+            };
         };
         return { status: true };
     }
     integer(request, property, customMessage) {
         const regExp = this.validateRegExp('[^0-9]');
         if (regExp.test(`${request[property]}`)) {
-            return { status: false, message: "Error: Invalid integer" };
+            return {
+                status: false,
+                message: customMessage != undefined ? customMessage : "Error: Invalid integer"
+            };
         };
         return { status: true };
     }
@@ -50,7 +52,10 @@ class Validation {
         let intValue = parseInt(amount);
         if (typeof value === 'string') {
             if (value.length >= intValue) {
-                return { status: false, message: customMessage != undefined ? customMessage : `Error: minimum string length is ${intValue}` };
+                return {
+                    status: false,
+                    message: customMessage != undefined ? customMessage : `Error: minimum string length is ${intValue}`
+                };
             }
         }
         return { status: true };
@@ -59,7 +64,10 @@ class Validation {
         let intValue = parseInt(amount);
         if (typeof value === 'string') {
             if (value.length >= intValue) {
-                return { status: false, message: customMessage != undefined ? customMessage : `Error: maximum string length is ${intValue}` };
+                return {
+                    status: false,
+                    message: customMessage != undefined ? customMessage : `Error: maximum string length is ${intValue}`
+                };
             };
         }
         return { status: true };
@@ -67,7 +75,10 @@ class Validation {
     required(request, property, customMessage) {
         console.log(customMessage);
         if (!Object.keys(request).includes(property) || request[property] == '') {
-            return { status: false, message: customMessage != undefined ? customMessage : `Error: ${property} is required` };
+            return {
+                status: false,
+                message: customMessage != undefined ? customMessage : `Error: ${property} is required`
+            };
         }
         return { status: true };
     }
@@ -76,13 +87,19 @@ class Validation {
             JSON.parse(request[property]);
             return { status: true };
         } catch (e) {
-            return { status: false, message: customMessage != undefined ? customMessage : "Error: Invalid json string" };
+            return {
+                status: false,
+                message: customMessage != undefined ? customMessage : "Error: Invalid json string"
+            };
         }
     }
     email(request, property, customMessage) {
         var emailRegex = /^[A-Z0-9_'%=+!`#~$*?^{}&|-]+([\.][A-Z0-9_'%=+!`#~$*?^{}&|-]+)*@[A-Z0-9-]+(\.[A-Z0-9-]+)+$/i;
         if (!emailRegex.test(request[property])) {
-            return { status: false, message: customMessage != undefined ? customMessage : "Error: Invalid email" };
+            return {
+                status: false,
+                message: customMessage != undefined ? customMessage : "Error: Invalid email"
+            };
         };
         return { status: true };
     }
