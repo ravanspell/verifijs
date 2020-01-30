@@ -1,9 +1,8 @@
 /**
- * Auther: Ireshan M Pathirana
- * Licence: GNU Public Licence
- * Usage: any java script freamwork
+ * Author: Ireshan M Pathirana 
+ * Licence: GNU Public Licence
+ * Usage: any java script framework 
  */
-
 class Validation {
 
     check(request, checkObj, messages = {}) {
@@ -31,20 +30,16 @@ class Validation {
     string(request, property, customMessage) {
         const regExp = this.validateRegExp('[^A-Za-z0-9]+');
         if (regExp.test(request[property])) {
-            return {
-                status: false,
-                message: customMessage != undefined ? customMessage : "Error: Invalid string"
-            };
+            let defaultErrorMessage = "Error: Invalid string";
+            return this.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
     integer(request, property, customMessage) {
         const regExp = this.validateRegExp('[^0-9]');
         if (regExp.test(`${request[property]}`)) {
-            return {
-                status: false,
-                message: customMessage != undefined ? customMessage : "Error: Invalid integer"
-            };
+            let defaultErrorMessage = "Error: Invalid integer";
+            return this.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
@@ -52,10 +47,8 @@ class Validation {
         let intValue = parseInt(amount);
         if (typeof value === 'string') {
             if (value.length >= intValue) {
-                return {
-                    status: false,
-                    message: customMessage != undefined ? customMessage : `Error: minimum string length is ${intValue}`
-                };
+                let defaultErrorMessage = `Error: minimum string length is ${intValue}`;
+                return this.validationErrorInjector(defaultErrorMessage, customMessage);
             }
         }
         return { status: true };
@@ -64,21 +57,16 @@ class Validation {
         let intValue = parseInt(amount);
         if (typeof value === 'string') {
             if (value.length >= intValue) {
-                return {
-                    status: false,
-                    message: customMessage != undefined ? customMessage : `Error: maximum string length is ${intValue}`
-                };
+                let defaultErrorMessage = `Error: maximum string length is ${intValue}`;
+                return this.validationErrorInjector(defaultErrorMessage, customMessage);
             };
         }
         return { status: true };
     }
     required(request, property, customMessage) {
-        console.log(customMessage);
         if (!Object.keys(request).includes(property) || request[property] == '') {
-            return {
-                status: false,
-                message: customMessage != undefined ? customMessage : `Error: ${property} is required`
-            };
+            let defaultErrorMessage = `Error: ${property} is required`;
+            return this.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
@@ -87,38 +75,41 @@ class Validation {
             JSON.parse(request[property]);
             return { status: true };
         } catch (e) {
-            return {
-                status: false,
-                message: customMessage != undefined ? customMessage : "Error: Invalid json string"
-            };
+            let defaultErrorMessage = "Error: Invalid json string";
+            return this.validationErrorInjector(defaultErrorMessage, customMessage);
         }
     }
     email(request, property, customMessage) {
         var emailRegex = /^[A-Z0-9_'%=+!`#~$*?^{}&|-]+([\.][A-Z0-9_'%=+!`#~$*?^{}&|-]+)*@[A-Z0-9-]+(\.[A-Z0-9-]+)+$/i;
         if (!emailRegex.test(request[property])) {
-            return {
-                status: false,
-                message: customMessage != undefined ? customMessage : "Error: Invalid email"
-            };
+            let defaultErrorMessage = "Error: Invalid email";
+            return this.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
     uuid(request, property, customMessage) {
         const uuidRegExp = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
         if (!uuidRegExp.test(request[property])) {
-            return {
-                status: false,
-                message: customMessage != undefined ? customMessage : "Error: Invalid uuid"
-            };
+            let defaultErrorMessage = "Error: Invalid uuid";
+            return this.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
+    //Process custom error messages which user defined
     messageProcessor(messages, property, type) {
         let errorMessageField = Object.keys(messages).filter(messageKey => messageKey == `${property}_${type}` || messageKey == type);
         return messages[errorMessageField];
     }
+    //Returns regular expression object for given reg exp string
     validateRegExp(regexp) {
         return new RegExp(regexp);
+    }
+    //Inject the error message whether it is custom message or default error message
+    validationErrorInjector(defaultErrorMessage, customMessage = undefined) {
+        return {
+            status: false,
+            message: customMessage != undefined ? customMessage : defaultErrorMessage
+        };
     }
 }
 module.exports = Validation;
