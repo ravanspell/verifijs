@@ -4,7 +4,10 @@
  * Usage: any java script framework 
  */
 class Validation {
-
+    constructor() {
+        this.dbConnection = null;
+        this.dbType = null;
+    }
     check(request, checkObj, messages = {}) {
         let errorArry = [];
         for (const property in checkObj) {
@@ -13,13 +16,13 @@ class Validation {
                 if (type.includes(':')) {
                     let [func, amount] = type.split(':');
                     let customMessage = this.messageProcessor(messages, property, func);
-                    let validationState = this[func](amount, request[property], customMessage);
+                    let validationState = this[`${func}Validation`](amount, request[property], customMessage);
                     if (!validationState.status)
                         errorArry.push(validationState.message);
                 }
                 if (!type.includes(':')) {
                     let customMessage = this.messageProcessor(messages, property, type);
-                    let validationState = this[type](request, property, customMessage);
+                    let validationState = this[`${type}Validation`](request, property, customMessage);
                     if (!validationState.status)
                         errorArry.push(validationState.message);
                 }
@@ -27,15 +30,24 @@ class Validation {
         }
         return { validation: errorArry.length > 0 ? false : true, error: errorArry }
     }
-    string(request, property, customMessage) {
-        const regExp = this.validateRegExp('[^A-Za-z0-9]+');
-        if (regExp.test(request[property])) {
+
+    stringValidation(request, property, customMessage) {
+        console.log(`${!(typeof request[property] === "string")} ${request[property]}`);
+        if (!(typeof request[property] === 'string')) {
             let defaultErrorMessage = "Error: Invalid string";
             return this.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
-    integer(request, property, customMessage) {
+    alphaValidation(request, property, customMessage) {
+        const regExp = this.validateRegExp('[^A-Za-z0-9 ]+');
+        if (regExp.test(request[property])) {
+            let defaultErrorMessage = "Error: Special characters included";
+            return this.validationErrorInjector(defaultErrorMessage, customMessage);
+        };
+        return { status: true };
+    }
+    integerValidation(request, property, customMessage) {
         const regExp = this.validateRegExp('[^0-9]');
         if (regExp.test(`${request[property]}`)) {
             let defaultErrorMessage = "Error: Invalid integer";
@@ -43,34 +55,34 @@ class Validation {
         };
         return { status: true };
     }
-    min(amount, value, customMessage) {
+    minValidation(amount, value, customMessage) {
         let intValue = parseInt(amount);
         if (typeof value === 'string') {
             if (value.length >= intValue) {
-                let defaultErrorMessage = `Error: minimum string length is ${intValue}`;
+                let defaultErrorMessage = `Error: Minimum string length is ${intValue}`;
                 return this.validationErrorInjector(defaultErrorMessage, customMessage);
             }
         }
         return { status: true };
     }
-    max(amount, value, customMessage) {
+    maxValidation(amount, value, customMessage) {
         let intValue = parseInt(amount);
         if (typeof value === 'string') {
             if (value.length >= intValue) {
-                let defaultErrorMessage = `Error: maximum string length is ${intValue}`;
+                let defaultErrorMessage = `Error: Maximum string length is ${intValue}`;
                 return this.validationErrorInjector(defaultErrorMessage, customMessage);
             };
         }
         return { status: true };
     }
-    required(request, property, customMessage) {
+    requiredValidation(request, property, customMessage) {
         if (!Object.keys(request).includes(property) || request[property] == '') {
             let defaultErrorMessage = `Error: ${property} is required`;
             return this.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
-    json(request, property, customMessage) {
+    jsonValidation(request, property, customMessage) {
         try {
             JSON.parse(request[property]);
             return { status: true };
@@ -79,7 +91,7 @@ class Validation {
             return this.validationErrorInjector(defaultErrorMessage, customMessage);
         }
     }
-    email(request, property, customMessage) {
+    emailValidation(request, property, customMessage) {
         var emailRegex = /^[A-Z0-9_'%=+!`#~$*?^{}&|-]+([\.][A-Z0-9_'%=+!`#~$*?^{}&|-]+)*@[A-Z0-9-]+(\.[A-Z0-9-]+)+$/i;
         if (!emailRegex.test(request[property])) {
             let defaultErrorMessage = "Error: Invalid email";
@@ -87,10 +99,18 @@ class Validation {
         };
         return { status: true };
     }
-    uuid(request, property, customMessage) {
+    uuidValidation(request, property, customMessage) {
         const uuidRegExp = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
         if (!uuidRegExp.test(request[property])) {
             let defaultErrorMessage = "Error: Invalid uuid";
+            return this.validationErrorInjector(defaultErrorMessage, customMessage);
+        };
+        return { status: true };
+    }
+    regExpValidation(regExpression, value, customMessage) {
+        const regExp = this.validateRegExp(regExpression);
+        if (!regExp.test(value)) {
+            let defaultErrorMessage = "Error: Invalid input";
             return this.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
