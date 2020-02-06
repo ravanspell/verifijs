@@ -1,7 +1,7 @@
 const Validation = require('./Validation');
 
 let reqObj = {
-    name: "Ical survey 2019",
+    name: "Ical survey 2019@#$",
     age: 56,
     address: 'No234Knnimahara',
     obj: '{"name":"kalo"}',
@@ -14,7 +14,7 @@ const messages = {
 const validation = new Validation();
 
 let status = validation.check(reqObj, {
-    name: 'required|string|max:30|regExp:[a-zA-Z ]',
+    name: 'required|string|max:30|regExp:[a-zA-Z ]|alpha',
     age: 'required|integer',
     address: 'required|string',
     obj: 'required|json',

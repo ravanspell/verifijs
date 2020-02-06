@@ -4,10 +4,12 @@
  * Usage: any java script framework 
  */
 class Validation {
-    constructor() {
-        this.dbConnection = null;
-        this.dbType = null;
+    constructor(dbConnection = null, dbType = null, dbName = null) {
+        this.dbConnection = dbConnection;
+        this.dbType = dbType;
+        this.dbName = dbName;
     }
+
     check(request, checkObj, messages = {}) {
         let errorArry = [];
         for (const property in checkObj) {
