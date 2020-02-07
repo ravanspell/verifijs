@@ -58,7 +58,7 @@ class Validation {
     minValidation(amount, value, customMessage) {
         let intValue = parseInt(amount);
         if (typeof value === 'string') {
-            if (value.length >= intValue) {
+            if (value.length < intValue) {
                 let defaultErrorMessage = `Error: Minimum string length is ${intValue}`;
                 return this.validationErrorInjector(defaultErrorMessage, customMessage);
             }
@@ -84,7 +84,8 @@ class Validation {
     }
     jsonValidation(request, property, customMessage) {
         try {
-            JSON.parse(request[property]);
+            let jsontext = JSON.stringify(request[property]);
+            JSON.parse(jsontext);
             return { status: true };
         } catch (e) {
             let defaultErrorMessage = "Error: Invalid json string";
