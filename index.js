@@ -19,9 +19,13 @@ let status = validation.check(reqObj, {
     address: 'required|string',
     obj: 'required|json',
     email: 'required|email',
-    id: 'uuid'
-}, messages);
+    id: 'unique'
+}, messages).then(result => {
+    console.log(result);
+});
 
-console.log(status);
+console.log('pkaya');
+
+
 
 

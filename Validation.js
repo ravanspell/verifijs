@@ -3,37 +3,44 @@
  * Licence: GNU Public Licence
  * Usage: any java script framework 
  */
+const dbFactory = require('./dbFactory');
 class Validation {
     constructor(dbConnection = null, dbType = null, dbName = null) {
-        this.dbConnection = dbConnection;
-        this.dbType = dbType;
-        this.dbName = dbName;
+        //this.dbConnection = dbConnection;
+        //this.dbType = dbType;
+        //this.dbName = dbName;
+        Object.assign(this, dbFactory.InitDbService('mongodb', 'mongodb://127.0.0.1:27017', 'dhananjayatrades'));
+        //this.mmm = this.dbFactory.bind(this);
+        //this.connection = this.dbFactory.connection('mongodb://127.0.0.1:27017', 'dhananjayatrades');
     }
 
-    check(request, checkObj, messages = {}) {
+    async check(request, checkObj, messages = {}) {
+        console.log(JSON.stringify(this));
+
         let errorArry = [];
         for (const property in checkObj) {
             let check = checkObj[property].split('|');
-            check.forEach(type => {
+            for (let type of check) {
                 if (type.includes(':')) {
                     let [func, amount] = type.split(':');
                     let customMessage = this.messageProcessor(messages, property, func);
-                    let validationState = this[`${func}Validation`](amount, request[property], customMessage);
+                    let validationState = await this[`${func}Validation`](amount, request[property], customMessage);
                     if (!validationState.status)
                         errorArry.push(validationState.message);
                 }
                 if (!type.includes(':')) {
                     let customMessage = this.messageProcessor(messages, property, type);
-                    let validationState = this[`${type}Validation`](request, property, customMessage);
+                    let validationState = await this[`${type}Validation`](request, property, customMessage);
                     if (!validationState.status)
                         errorArry.push(validationState.message);
                 }
-            });
+            }
         }
         return { validation: errorArry.length > 0 ? false : true, error: errorArry }
+
     }
 
-    stringValidation(request, property, customMessage) {
+    async stringValidation(request, property, customMessage) {
         console.log(`${!(typeof request[property] === "string")} ${request[property]}`);
         if (!(typeof request[property] === 'string')) {
             let defaultErrorMessage = "Error: Invalid string";
@@ -41,7 +48,7 @@ class Validation {
         };
         return { status: true };
     }
-    alphaValidation(request, property, customMessage) {
+    async alphaValidation(request, property, customMessage) {
         const regExp = this.validateRegExp('[^A-Za-z0-9 ]+');
         if (regExp.test(request[property])) {
             let defaultErrorMessage = "Error: Special characters included";
@@ -49,7 +56,7 @@ class Validation {
         };
         return { status: true };
     }
-    integerValidation(request, property, customMessage) {
+    async integerValidation(request, property, customMessage) {
         const regExp = this.validateRegExp('[^0-9]');
         if (regExp.test(`${request[property]}`)) {
             let defaultErrorMessage = "Error: Invalid integer";
@@ -57,7 +64,7 @@ class Validation {
         };
         return { status: true };
     }
-    minValidation(amount, value, customMessage) {
+    async minValidation(amount, value, customMessage) {
         let intValue = parseInt(amount);
         if (typeof value === 'string') {
             if (value.length >= intValue) {
@@ -67,7 +74,7 @@ class Validation {
         }
         return { status: true };
     }
-    maxValidation(amount, value, customMessage) {
+    async maxValidation(amount, value, customMessage) {
         let intValue = parseInt(amount);
         if (typeof value === 'string') {
             if (value.length >= intValue) {
@@ -77,14 +84,14 @@ class Validation {
         }
         return { status: true };
     }
-    requiredValidation(request, property, customMessage) {
+    async requiredValidation(request, property, customMessage) {
         if (!Object.keys(request).includes(property) || request[property] == '') {
             let defaultErrorMessage = `Error: ${property} is required`;
             return this.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
-    jsonValidation(request, property, customMessage) {
+    async jsonValidation(request, property, customMessage) {
         try {
             JSON.parse(request[property]);
             return { status: true };
@@ -93,7 +100,7 @@ class Validation {
             return this.validationErrorInjector(defaultErrorMessage, customMessage);
         }
     }
-    emailValidation(request, property, customMessage) {
+    async emailValidation(request, property, customMessage) {
         var emailRegex = /^[A-Z0-9_'%=+!`#~$*?^{}&|-]+([\.][A-Z0-9_'%=+!`#~$*?^{}&|-]+)*@[A-Z0-9-]+(\.[A-Z0-9-]+)+$/i;
         if (!emailRegex.test(request[property])) {
             let defaultErrorMessage = "Error: Invalid email";
@@ -101,7 +108,7 @@ class Validation {
         };
         return { status: true };
     }
-    uuidValidation(request, property, customMessage) {
+    async uuidValidation(request, property, customMessage) {
         const uuidRegExp = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
         if (!uuidRegExp.test(request[property])) {
             let defaultErrorMessage = "Error: Invalid uuid";
@@ -109,7 +116,7 @@ class Validation {
         };
         return { status: true };
     }
-    regExpValidation(regExpression, value, customMessage) {
+    async regExpValidation(regExpression, value, customMessage) {
         const regExp = this.validateRegExp(regExpression);
         if (!regExp.test(value)) {
             let defaultErrorMessage = "Error: Invalid input";
