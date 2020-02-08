@@ -3,6 +3,7 @@
  * Licence: GNU Public Licence
  * Usage: any java script framework 
  */
+const Util = require('./util');
 const dbFactory = require('./dbFactory');
 class Validation {
     constructor(dbConnection = null, dbType = null, dbName = null) {
@@ -35,7 +36,7 @@ class Validation {
         console.log(`${!(typeof request[property] === "string")} ${request[property]}`);
         if (!(typeof request[property] === 'string')) {
             let defaultErrorMessage = "Error: Invalid string";
-            return this.validationErrorInjector(defaultErrorMessage, customMessage);
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
@@ -43,7 +44,7 @@ class Validation {
         const regExp = this.validateRegExp('[^A-Za-z0-9 ]+');
         if (regExp.test(request[property])) {
             let defaultErrorMessage = "Error: Special characters included";
-            return this.validationErrorInjector(defaultErrorMessage, customMessage);
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
@@ -51,7 +52,7 @@ class Validation {
         const regExp = this.validateRegExp('[^0-9]');
         if (regExp.test(`${request[property]}`)) {
             let defaultErrorMessage = "Error: Invalid integer";
-            return this.validationErrorInjector(defaultErrorMessage, customMessage);
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
@@ -60,7 +61,7 @@ class Validation {
         if (typeof value === 'string') {
             if (value.length >= intValue) {
                 let defaultErrorMessage = `Error: Minimum string length is ${intValue}`;
-                return this.validationErrorInjector(defaultErrorMessage, customMessage);
+                return Util.validationErrorInjector(defaultErrorMessage, customMessage);
             }
         }
         return { status: true };
@@ -70,7 +71,7 @@ class Validation {
         if (typeof value === 'string') {
             if (value.length >= intValue) {
                 let defaultErrorMessage = `Error: Maximum string length is ${intValue}`;
-                return this.validationErrorInjector(defaultErrorMessage, customMessage);
+                return Util.validationErrorInjector(defaultErrorMessage, customMessage);
             };
         }
         return { status: true };
@@ -78,7 +79,7 @@ class Validation {
     async requiredValidation(request, property, customMessage) {
         if (!Object.keys(request).includes(property) || request[property] == '') {
             let defaultErrorMessage = `Error: ${property} is required`;
-            return this.validationErrorInjector(defaultErrorMessage, customMessage);
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
@@ -88,14 +89,14 @@ class Validation {
             return { status: true };
         } catch (e) {
             let defaultErrorMessage = "Error: Invalid json string";
-            return this.validationErrorInjector(defaultErrorMessage, customMessage);
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
     }
     async emailValidation(request, property, customMessage) {
         var emailRegex = /^[A-Z0-9_'%=+!`#~$*?^{}&|-]+([\.][A-Z0-9_'%=+!`#~$*?^{}&|-]+)*@[A-Z0-9-]+(\.[A-Z0-9-]+)+$/i;
         if (!emailRegex.test(request[property])) {
             let defaultErrorMessage = "Error: Invalid email";
-            return this.validationErrorInjector(defaultErrorMessage, customMessage);
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
@@ -103,7 +104,7 @@ class Validation {
         const uuidRegExp = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
         if (!uuidRegExp.test(request[property])) {
             let defaultErrorMessage = "Error: Invalid uuid";
-            return this.validationErrorInjector(defaultErrorMessage, customMessage);
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
@@ -111,7 +112,7 @@ class Validation {
         const regExp = this.validateRegExp(regExpression);
         if (!regExp.test(value)) {
             let defaultErrorMessage = "Error: Invalid input";
-            return this.validationErrorInjector(defaultErrorMessage, customMessage);
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
@@ -123,13 +124,6 @@ class Validation {
     //Returns regular expression object for given reg exp string
     validateRegExp(regexp) {
         return new RegExp(regexp);
-    }
-    //Inject the error message whether it is custom message or default error message
-    validationErrorInjector(defaultErrorMessage, customMessage = undefined) {
-        return {
-            status: false,
-            message: customMessage != undefined ? customMessage : defaultErrorMessage
-        };
     }
 }
 module.exports = Validation;
