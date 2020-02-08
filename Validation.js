@@ -17,7 +17,7 @@ class Validation {
                 if (type.includes(':')) {
                     let [func, amount] = type.split(':');
                     let customMessage = this.messageProcessor(messages, property, func);
-                    let validationState = await this[`${func}Validation`](amount, request[property], customMessage);
+                    let validationState = await this[`${func}Validation`](amount, request[property], customMessage, property);
                     if (!validationState.status)
                         errorArry.push(validationState.message);
                 }
@@ -33,7 +33,6 @@ class Validation {
     }
 
     async stringValidation(request, property, customMessage) {
-        console.log(`${!(typeof request[property] === "string")} ${request[property]}`);
         if (!(typeof request[property] === 'string')) {
             let defaultErrorMessage = "Error: Invalid string";
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
@@ -67,6 +66,7 @@ class Validation {
         return { status: true };
     }
     async maxValidation(amount, value, customMessage) {
+        console.log(`amount is ${amount} value is ${value}`);
         let intValue = parseInt(amount);
         if (typeof value === 'string') {
             if (value.length >= intValue) {

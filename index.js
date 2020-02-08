@@ -6,10 +6,11 @@ let reqObj = {
     address: 'No234Knnimahara',
     obj: '{"name":"kalo"}',
     email: 'ireshandj2@gmail.com',
-    id: 'f1277d16-5cb9-43f6-95ce-a5e22e12cdaa'
+    _id: "18870"
 }
 const messages = {
-    name_required: "This porparty is required"
+    name_required: "This porparty is required",
+    _id_unique: "this is not uniue try another one"
 }
 const validation = new Validation('mongodb://127.0.0.1:27017', 'mongodb', 'dhananjayatrades');
 
@@ -19,7 +20,7 @@ let status = validation.check(reqObj, {
     address: 'required|string',
     obj: 'required|json',
     email: 'required|email',
-    id: 'unique'
+    _id: 'unique:status'
 }, messages).then(result => {
     console.log(result);
 });
