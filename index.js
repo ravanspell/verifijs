@@ -24,7 +24,6 @@ let status = validation.check(reqObj, {
     console.log(result);
 });
 
-console.log('pkaya');
 
 
 
