@@ -6,7 +6,6 @@ class DbFactory {
     }
 
     static InitDbService(dbType, connectionString, database) {
-        console.log(connectionString)
         switch (dbType) {
             case 'mongodb':
                 return new MongoDb(connectionString, database);

@@ -11,7 +11,7 @@ let reqObj = {
 const messages = {
     name_required: "This porparty is required"
 }
-const validation = new Validation();
+const validation = new Validation('mongodb://127.0.0.1:27017', 'mongodb', 'dhananjayatrades');
 
 let status = validation.check(reqObj, {
     name: 'required|string|max:30|regExp:[a-zA-Z ]|alpha',

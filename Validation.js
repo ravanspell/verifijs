@@ -6,17 +6,9 @@
 const dbFactory = require('./dbFactory');
 class Validation {
     constructor(dbConnection = null, dbType = null, dbName = null) {
-        //this.dbConnection = dbConnection;
-        //this.dbType = dbType;
-        //this.dbName = dbName;
-        Object.assign(this, dbFactory.InitDbService('mongodb', 'mongodb://127.0.0.1:27017', 'dhananjayatrades'));
-        //this.mmm = this.dbFactory.bind(this);
-        //this.connection = this.dbFactory.connection('mongodb://127.0.0.1:27017', 'dhananjayatrades');
+        Object.assign(this, dbFactory.InitDbService(dbType, dbConnection, dbName));
     }
-
     async check(request, checkObj, messages = {}) {
-        console.log(JSON.stringify(this));
-
         let errorArry = [];
         for (const property in checkObj) {
             let check = checkObj[property].split('|');
@@ -37,7 +29,6 @@ class Validation {
             }
         }
         return { validation: errorArry.length > 0 ? false : true, error: errorArry }
-
     }
 
     async stringValidation(request, property, customMessage) {
