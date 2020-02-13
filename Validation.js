@@ -108,6 +108,15 @@ class Validation {
         };
         return { status: true };
     }
+    booleanValidation(request, property, customMessage) {
+        let validationValue = request[property];
+        console.log('is enable value is', !validationValue == true);
+        if (!(validationValue === 1 || validationValue === 0 || validationValue === true || validationValue === false)) {
+            let defaultErrorMessage = "Error: Invalid boolean value";
+            return this.validationErrorInjector(defaultErrorMessage, customMessage);
+        };
+        return { status: true };
+    }
     regExpValidation(regExpression, value, customMessage) {
         const regExp = this.validateRegExp(regExpression);
         if (!regExp.test(value)) {
