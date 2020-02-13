@@ -1,7 +1,7 @@
 const Validation = require('./Validation');
 
 let reqObj = {
-    name: "Ical survey 2019",
+    first_name: "Ical survey 2019",
     age: 56,
     address: 'No234Knnimahara',
     obj: '{"name":"kalo"}',
@@ -9,12 +9,12 @@ let reqObj = {
     id: 'f1277d16-5cb9-43f6-95ce-a5e22e12cdaa'
 }
 const messages = {
-    name_required: "This porparty is required"
+    first_name_required: "First name is required"
 }
 const validation = new Validation();
 
 let status = validation.check(reqObj, {
-    name: 'required|string|max:30|regExp:[a-zA-Z ]',
+    first_name: 'required|string|max:30|regExp:[a-zA-Z ]',
     age: 'required|integer',
     address: 'required|string',
     obj: 'required|json',

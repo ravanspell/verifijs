@@ -76,7 +76,7 @@ class Validation {
         return { status: true };
     }
     requiredValidation(request, property, customMessage) {
-        if (!Object.keys(request).includes(property) || request[property] == '') {
+        if (!request.hasOwnProperty(property) || request[property] == '') {
             let defaultErrorMessage = `Error: ${property} is required`;
             return this.validationErrorInjector(defaultErrorMessage, customMessage);
         }
