@@ -7,7 +7,8 @@ let reqObj = {
     obj: '{"name":"kalo"}',
     email: 'ireshandj2@gmail.com',
     id: 'f1277d16-5cb9-43f6-95ce-a5e22e12cdaa',
-    is_enable: true
+    is_enable: true,
+    term: 'Yes'
 }
 const messages = {
     first_name_required: "First name is required",
@@ -22,7 +23,8 @@ let status = validation.check(reqObj, {
     obj: 'required|json',
     email: 'required|email',
     id: 'uuid',
-    is_enable: 'boolean'
+    is_enable: 'boolean',
+    term: 'in:yes,no,maybe'
 }, messages);
 
 console.log(status);
