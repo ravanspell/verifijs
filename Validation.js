@@ -75,8 +75,17 @@ class Validation {
         }
         return { status: true };
     }
+    inValidation(setOfTerms, value, customMessage) {
+        let termsArray = setOfTerms.toLowerCase().split(',')
+        if (!termsArray.includes(value.toLowerCase())) {
+            let defaultErrorMessage = `Error: ${value} is not expect`;
+            return this.validationErrorInjector(defaultErrorMessage, customMessage);
+        }
+        return { status: true };
+    }
     requiredValidation(request, property, customMessage) {
-        if (!request.hasOwnProperty(property) || request[property] == '') {
+        let requiredValue = `${request[property]}`;
+        if (!request.hasOwnProperty(property) || requiredValue == '') {
             let defaultErrorMessage = `Error: ${property} is required`;
             return this.validationErrorInjector(defaultErrorMessage, customMessage);
         }
@@ -104,6 +113,15 @@ class Validation {
         const uuidRegExp = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
         if (!uuidRegExp.test(request[property])) {
             let defaultErrorMessage = "Error: Invalid uuid";
+            return this.validationErrorInjector(defaultErrorMessage, customMessage);
+        };
+        return { status: true };
+    }
+    booleanValidation(request, property, customMessage) {
+        let validationValue = request[property];
+        console.log('is enable value is', !validationValue == true);
+        if (!(validationValue === 1 || validationValue === 0 || validationValue === true || validationValue === false)) {
+            let defaultErrorMessage = "Error: Invalid boolean value";
             return this.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };

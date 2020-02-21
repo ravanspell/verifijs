@@ -6,10 +6,13 @@ let reqObj = {
     address: 'No234Knnimahara',
     obj: '{"name":"kalo"}',
     email: 'ireshandj2@gmail.com',
-    id: 'f1277d16-5cb9-43f6-95ce-a5e22e12cdaa'
+    id: 'f1277d16-5cb9-43f6-95ce-a5e22e12cdaa',
+    is_enable: true,
+    term: 'Yes'
 }
 const messages = {
-    first_name_required: "First name is required"
+    first_name_required: "First name is required",
+    is_enable_boolean: "is enable must be true or false"
 }
 const validation = new Validation();
 
@@ -19,7 +22,9 @@ let status = validation.check(reqObj, {
     address: 'required|string',
     obj: 'required|json',
     email: 'required|email',
-    id: 'uuid'
+    id: 'uuid',
+    is_enable: 'boolean',
+    term: 'in:yes,no,maybe'
 }, messages);
 
 console.log(status);
