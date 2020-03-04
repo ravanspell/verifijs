@@ -68,7 +68,7 @@ class Validation {
     maxValidation(amount, value, customMessage) {
         let intValue = parseInt(amount);
         if (typeof value === 'string') {
-            if (value.length >= intValue) {
+            if (value.length > intValue) {
                 let defaultErrorMessage = `Error: Maximum string length is ${intValue}`;
                 return this.validationErrorInjector(defaultErrorMessage, customMessage);
             };
