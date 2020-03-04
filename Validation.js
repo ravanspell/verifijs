@@ -76,10 +76,12 @@ class Validation {
         return { status: true };
     }
     inValidation(setOfTerms, value, customMessage) {
-        let termsArray = setOfTerms.toLowerCase().split(',')
-        if (!termsArray.includes(value.toLowerCase())) {
-            let defaultErrorMessage = `Error: ${value} is not expect`;
-            return this.validationErrorInjector(defaultErrorMessage, customMessage);
+        if (value != undefined) {
+            let termsArray = setOfTerms.toLowerCase().split(',')
+            if (!termsArray.includes(value.toLowerCase())) {
+                let defaultErrorMessage = `Error: ${value} is not expect`;
+                return this.validationErrorInjector(defaultErrorMessage, customMessage);
+            }
         }
         return { status: true };
     }
