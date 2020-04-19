@@ -7,13 +7,12 @@ const Util = require('./util');
 const dbFactory = require('./dbFactory');
 class Validation {
     /**
-     * 
      * @param {string} dbConnection dbConnection optional parameater
-     * @param {string} dbType 
-     * @param {string} dbName 
+     * @param {string} dbType mongodb mysql postgresql
      */
     constructor(dbConnection = null, dbType = null) {
         Object.assign(this, dbFactory.InitDbService(dbType, dbConnection));
+        this.bail = false;
     }
     async check(request, checkObj, messages = {}) {
         let errorArry = [];
@@ -294,6 +293,9 @@ class Validation {
         return { status: true };
     }
 
+    async bailValidation(date, value, customMessage) {
+        this.bail = true;
+    }
     //Process custom error messages which user defined
     messageProcessor(messages, property, type) {
         let errorMessageField = Object.keys(messages).filter(messageKey => messageKey == `${property}_${type}` || messageKey == type);
