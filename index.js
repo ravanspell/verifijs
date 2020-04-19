@@ -1,7 +1,7 @@
 const Validation = require('./Validation');
 
 let reqObj = {
-    first_name: "Ical survey 2019",
+    name: "Ical survey 2019@#$",
     age: 56,
     address: 'No234Knnimahara',
     obj: '{"name":"kalo"}',
@@ -12,21 +12,31 @@ let reqObj = {
 }
 const messages = {
     first_name_required: "First name is required",
-    is_enable_boolean: "is enable must be true or false"
+    is_enable_boolean: "is enable must be true or false",
+    _id: "18870"
+}
+const messages = {
+    name_required: "This porparty is required",
+    _id_unique: "this is not uniue try another one"
 }
 const validation = new Validation();
 
 let status = validation.check(reqObj, {
     first_name: 'required|string|max:30|regExp:[a-zA-Z ]',
+    name: 'required|string|max:30|regExp:[a-zA-Z ]|alpha',
     age: 'required|integer',
     address: 'required|string',
     obj: 'required|json',
     email: 'required|email',
     id: 'uuid',
     is_enable: 'boolean',
-    term: 'in:yes,no,maybe'
-}, messages);
+    term: 'in:yes,no,maybe',
+    _id: 'unique:status'
+}, messages).then(result => {
+    console.log(result);
+});
 
-console.log(status);
+
+
 
 
