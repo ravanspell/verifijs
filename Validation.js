@@ -6,8 +6,14 @@
 const Util = require('./util');
 const dbFactory = require('./dbFactory');
 class Validation {
-    constructor(dbConnection = null, dbType = null, dbName = null) {
-        Object.assign(this, dbFactory.InitDbService(dbType, dbConnection, dbName));
+    /**
+     * 
+     * @param {string} dbConnection dbConnection optional parameater
+     * @param {string} dbType 
+     * @param {string} dbName 
+     */
+    constructor(dbConnection = null, dbType = null) {
+        Object.assign(this, dbFactory.InitDbService(dbType, dbConnection));
     }
     async check(request, checkObj, messages = {}) {
         let errorArry = [];

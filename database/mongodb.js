@@ -1,10 +1,10 @@
 const MongoClient = require('mongodb').MongoClient;
 const Util = require('../util');
 class MongoDb {
-    constructor(connectionString, database) {
-        this.connectionString = connectionString;
-        this.database = database;
-        this.dbConnection = null;
+    constructor(dbConnection) {
+        //this.connectionString = connectionString;
+        //this.database = database;
+        this.dbConnection = dbConnection;
         this.uniqueValidation = this.uniqueValidation.bind(this);
     }
     async connection(url, database) {
@@ -23,7 +23,7 @@ class MongoDb {
     }
     async uniqueValidation(dbCollection, userInputValue, customMessage, columnName) {
         try {
-            this.dbConnection = await this.connection(this.connectionString, this.database);
+            //this.dbConnection = await this.connection(this.connectionString, this.database);
             const collection = this.dbConnection.collection(dbCollection);
             let findings = await collection.find({ [columnName]: userInputValue }).toArray();
             if (findings.length > 0) {

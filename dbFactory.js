@@ -5,10 +5,10 @@ class DbFactory {
 
     }
 
-    static InitDbService(dbType, connectionString, database) {
+    static InitDbService(dbType, dbConnection) {
         switch (dbType) {
             case 'mongodb':
-                return new MongoDb(connectionString, database);
+                return new MongoDb(dbConnection);
                 break;
         }
     }

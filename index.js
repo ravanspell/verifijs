@@ -12,7 +12,7 @@ const messages = {
     name_required: "This porparty is required",
     _id_unique: "this is not uniue try another one"
 }
-const validation = new Validation('mongodb://127.0.0.1:27017', 'mongodb', 'dhananjayatrades');
+const validation = new Validation();
 
 let status = validation.check(reqObj, {
     name: 'required|string|max:30|regExp:[a-zA-Z ]|alpha',
