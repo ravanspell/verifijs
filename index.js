@@ -93,6 +93,17 @@ class Validation {
         return { status: true };
     }
 
+    async not_inValidation(setOfTerms, value, customMessage) {
+        if (value != undefined) {
+            let termsArray = setOfTerms.toLowerCase().split(',')
+            if (termsArray.includes(value.toLowerCase())) {
+                let defaultErrorMessage = `Error: ${value} is not expect`;
+                return this.validationErrorInjector(defaultErrorMessage, customMessage);
+            }
+        }
+        return { status: true };
+    }
+
     async requiredValidation(request, property, customMessage) {
         if (!Object.keys(request).includes(property) || request[property] == '') {
             let defaultErrorMessage = `Error: ${property} is required`;
@@ -143,6 +154,146 @@ class Validation {
         };
         return { status: true };
     }
+    async alpha_dashValidation(request, property, customMessage) {
+        const regExp = this.validateRegExp('[^A-Za-z0-9-_ ]+');
+        if (regExp.test(request[property])) {
+            let defaultErrorMessage = "Error: Special characters included";
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        };
+        return { status: true };
+    }
+    async digits_betweenValidation(amount, value, customMessage) {
+        const [from, to] = amount.split(',').map(Number);
+        if (from > value || to < value) {
+            let defaultErrorMessage = `Error: Number is out of range`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        }
+        return { status: true };
+    }
+    async betweenValidation(amount, value, customMessage) {
+        let size = 0;
+        const [from, to] = amount.split(',').map(Number);
+        if (typeof value == 'object') {
+            size = Object.keys(value).length;
+        } else if (typeof value === 'number') {
+            size = value;
+        } else if (typeof value === 'string') {
+            size = value.length;
+        }
+        if (from > size || to < size) {
+            let defaultErrorMessage = `Error: data is out of range`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        }
+        return { status: true };
+    }
+
+    async ltValidation(amount, value, customMessage) {
+        let size = 0;
+        amount = parseInt(amount);
+        if (typeof value == 'object') {
+            size = Object.keys(value).length;
+        } else if (typeof value === 'number') {
+            size = value;
+        } else if (typeof value === 'string') {
+            size = value.length;
+        }
+        if (amount <= size) {
+            let defaultErrorMessage = `Error: value is not less than`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        }
+        return { status: true };
+    }
+
+    async lteValidation(amount, value, customMessage) {
+        let size = 0;
+        amount = parseInt(amount);
+        if (typeof value == 'object') {
+            size = Object.keys(value).length;
+        } else if (typeof value === 'number') {
+            size = value;
+        } else if (typeof value === 'string') {
+            size = value.length;
+        }
+        if (amount < size) {
+            let defaultErrorMessage = `Error: value is not less than or equal`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        }
+        return { status: true };
+    }
+
+    async gtValidation(amount, value, customMessage) {
+        let size = 0;
+        amount = parseInt(amount);
+        if (typeof value == 'object') {
+            size = Object.keys(value).length;
+        } else if (typeof value === 'number') {
+            size = value;
+        } else if (typeof value === 'string') {
+            size = value.length;
+        }
+        if (amount >= size) {
+            let defaultErrorMessage = `Error: value is not grater than`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        }
+        return { status: true };
+    }
+
+    async gteValidation(amount, value, customMessage) {
+        let size = 0;
+        amount = parseInt(amount);
+        if (typeof value == 'object') {
+            size = Object.keys(value).length;
+        } else if (typeof value === 'number') {
+            size = value;
+        } else if (typeof value === 'string') {
+            size = value.length;
+        }
+        if (amount > size) {
+            let defaultErrorMessage = `Error: value is not grater than or equal`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        }
+        return { status: true };
+    }
+
+    async sizeValidation(amount, value, customMessage) {
+        let size = 0;
+        amount = parseInt(amount);
+        if (typeof value == 'object') {
+            size = Object.keys(value).length;
+        } else if (typeof value === 'number') {
+            size = value;
+        } else if (typeof value === 'string') {
+            size = value.length;
+        }
+        console.log('size', size, 'amount', amount);
+        if (amount != size) {
+            let defaultErrorMessage = `Error: value is not equal`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        }
+        return { status: true };
+    }
+
+    async digitsValidation(amount, value, customMessage) {
+        amount = parseInt(amount);
+        value = value.toString().length;
+        console.log('amount', amount, 'length', value);
+        if (amount != value) {
+            let defaultErrorMessage = `Error: Number does not have ${amount} digits`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        }
+        return { status: true };
+    }
+
+    async date_equalsValidation(date, value, customMessage) {
+        date = new Date(date);
+        value = new Date(value);
+        if (date.getTime() != value.getTime()) {
+            let defaultErrorMessage = `Error: Date not equal`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        }
+        return { status: true };
+    }
+
     //Process custom error messages which user defined
     messageProcessor(messages, property, type) {
         let errorMessageField = Object.keys(messages).filter(messageKey => messageKey == `${property}_${type}` || messageKey == type);
