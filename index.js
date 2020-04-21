@@ -10,8 +10,8 @@ class Validation {
      * @param {string} dbConnection dbConnection optional parameater
      * @param {string} dbType mongodb mysql postgresql
      */
-    constructor(dbConnection = null, dbType = null) {
-        Object.assign(this, dbFactory.InitDbService(dbType, dbConnection));
+    constructor(dbConnectionSettings = null, dbType = null) {
+        Object.assign(this, dbFactory.InitDbService(dbConnectionSettings, dbType));
         this.bail = false;
     }
     async check(request, checkObj, messages = {}) {
