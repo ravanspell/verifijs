@@ -17,7 +17,7 @@ Please make sure to update tests as appropriate.
 express-validation is aligant validation library that inpired by laravel freamwork.
 
 - Express validation is very light weight validation library.
-- Express validation use very limited number of dependencies. (It is useig database driver packges such as mysql,mongodb,postgresql only).
+- Express validation use very limited number of dependencies. (It is useing database driver packges such as mysql,mongodb,postgresql only).
 - Express validation define validation enable defined chained validation rule schema.It allow use multiple validations to single input.
 
 - It allow use even database based validations. For instance : If you want to check some data wether already in the database or not express validation allow check value by simply define a schema.

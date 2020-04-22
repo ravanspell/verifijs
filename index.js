@@ -119,9 +119,18 @@ class Validation {
     }
 
     async requiredValidation(request, property, customMessage) {
-        if (!Object.keys(request).includes(property) || request[property] == '') {
-            let defaultErrorMessage = `Error: ${property} is required`;
+        let defaultErrorMessage = `Error: ${property} is required`;
+        let value = request[property];
+        if (!Object.keys(request).includes(property) || value == null) {
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        } else if (typeof value == 'string') {
+            if (!value.trim().length > 0) {
+                return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+            }
+        } else if (typeof value == 'object') {
+            if (!Object.keys(value).length > 0) {
+                return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+            }
         }
         return { status: true };
     }
