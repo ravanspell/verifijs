@@ -1,14 +1,29 @@
 /**
  * Author: Ireshan M Pathirana 
  * Licence: GNU Public Licence
- * Usage: any java script framework 
+ * Usage: Node Js 
  */
 const Util = require('./util');
 const dbFactory = require('./dbFactory');
 class Validation {
     /**
-     * @param {string} dbConnection dbConnection optional parameater
-     * @param {string} dbType mongodb mysql postgresql
+     * @param {object} dbConnectionSettings dbConnection settings optional
+     * @param {string} dbType mongodb mysql postgresql  optional
+     * -----normal usage (without db validation)
+     * const validation = new Validation();
+     * -----mysql------
+     * const validation = new Validation({
+     *         host: "host",
+     *         user: "data base user",
+     *         password: "*****",
+     *         database: "data base name" 
+     * }, 
+     * 'mysql');  // type of dbms 
+     * -----mongodb-----
+     * const validation = new Validation({
+     * url: "mongo db connection url",
+     * }, 
+     * 'mongodb');  // type of dbms
      */
     constructor(dbConnectionSettings = null, dbType = null) {
         Object.assign(this, dbFactory.InitDbService(dbConnectionSettings, dbType));

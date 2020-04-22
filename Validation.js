@@ -16,7 +16,7 @@ let reqObj = {
     mobile: 724472890,
     birthDate: '1994-02-23',
     nic: 940552850,
-    order_id: 56276,
+    _id: "84155",
 }
 const messages = {
     first_name_required: "First name is required",
@@ -28,13 +28,18 @@ const messages = {
     birthDate_date_equals: "to day is not my birth day"
     // _id_unique: "this is not uniue try another one"
 }
+//------------- mysql --------------------
+// const validation = new Validation({
+//     host: "localhost",
+//     user: "root",
+//     password: "",
+//     database: "dhananjaya_treades"
+// }, 'mysql');
 
+//------------- mongodb --------------------
 const validation = new Validation({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "dhananjaya_treades"
-}, 'mysql');
+    url: "mongodb+srv://ireshandj2:0724472890@cluster0-2dsaz.mongodb.net/dhananjayatrades",
+}, 'mongodb');
 
 validation.check(reqObj, {
     first_name: 'required|string|max:30|regExp:[a-zA-Z ]',
@@ -52,7 +57,7 @@ validation.check(reqObj, {
     mobile: 'digits:9',
     nic: 'digits:9',
     birthDate: 'date_equals:1994-02-23',
-    order_id: 'exists:status'
+    _id: 'exists:status'
 }, messages).then(result => {
     console.log(result);
 });
