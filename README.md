@@ -17,11 +17,124 @@ Please make sure to update tests as appropriate.
 express-validation is aligant validation library that inpired by laravel freamwork.
 
 - Express validation is very light weight validation library.
-- Express validation use very limited number of dependencies. (It is useig database driver packges such as mysql,mongodb,postgresql only).
+- Express validation use very limited number of dependencies. (It is useing database driver packges such as mysql,mongodb,postgresql only).
 - Express validation define validation enable defined chained validation rule schema.It allow use multiple validations to single input.
 
 - It allow use even database based validations. For instance : If you want to check some data wether already in the database or not express validation allow check value by simply define a schema.
 - It currantly support only mongodb database validations. But as soon as possible it will support other database manamagent systems as well.
+
+## Validation Rules
+
+##### required
+
+The field under validation must be present in the input data and not empty. A field is considered "empty" if one of the following conditions are true:
+
+- The value is null.
+- The value is an empty string.
+- The value is an empty array or empty Countable object.
+
+##### size:value
+
+The field under validation must have a size matching the given value. For string data, value corresponds to the number of characters. For numeric data, value corresponds to a given integer value (the attribute must also have the numeric or integer rule). For an array, size corresponds to the count of the array. Let's look at some examples:
+
+```node
+// Validate that a string is exactly 12 characters long...
+'title': 'size:12';
+
+// Validate that a provided integer equals 10...
+'seats': 'integer|size:10';
+
+// Validate that an array has exactly 5 elements...
+'tags' : 'array|size:5';
+```
+
+##### string
+
+The field under validation must be a string.
+
+##### unique:table
+
+The field under validation must not exist within the given database table.Request property name should same name as the coulmn name. For example:
+here "userId" is the request object property that hold the value of user's id. The same name sould use for request property and database coulmn name.
+
+**currantly supports Mongodb and MySql only**
+
+```node
+//validation rule
+'userId': 'unique:table',
+```
+
+##### alpha
+
+The field under validation must be entirely alphabetic characters.
+
+##### alpha_dash
+
+The field under validation may have alpha-numeric characters, as well as dashes and underscores.
+
+##### alpha_num
+
+The field under validation must be entirely alpha-numeric characters.
+
+##### boolean
+
+The field under validation must be able to be cast as a boolean. Accepted input are `true, false, 1, 0, "1",`and `"0"`.
+
+##### date_equals:date
+
+The field under validation must be equal to the given date.
+
+##### digits:value
+
+The field under validation must be numeric and must have an exact length of value.
+
+##### digits_between:min,max
+
+The field under validation must be numeric and must have a length between the given min and max.
+
+##### email
+
+The field under validation must be formatted as an e-mail address.
+
+##### exists:table
+
+The field under validation must exist on a given database table.Request property name should same name as the coulmn name. For example:
+here "userId" is the request object property that hold the value of user's id. The same name sould use for request property and database coulmn name.
+
+**currantly supports Mongodb and MySql only**
+
+```node
+//validation rule
+'userId': 'exists:table',
+```
+
+##### gt:field
+
+The field under validation must be greater than the given field. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the size rule.
+
+##### gte:field
+
+The field under validation must be greater than or equal to the given field. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the size rule.
+
+##### in:value1,valie2
+
+The field under validation must be included in the given list of values.
+
+##### json
+
+The field under validation must be a valid JSON string.
+
+##### lt:field
+
+The field under validation must be less than the given field. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the size rule.
+
+##### regExp:pattern
+
+The field under validation must match the given regular expression.
+
+##### lte:field
+
+The field under validation must be less than or equal to the given field. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the size rule.
 
 ## Proposed Usage
 

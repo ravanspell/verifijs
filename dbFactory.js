@@ -1,15 +1,12 @@
 const MongoDb = require('./database/mongodb');
-
+const MySql = require("./database/mysql");
 class DbFactory {
-    constructor() {
-
-    }
-
-    static InitDbService(dbType, dbConnection) {
+    static InitDbService(dbConnectionSettings, dbType) {
         switch (dbType) {
             case 'mongodb':
-                return new MongoDb(dbConnection);
-                break;
+                return new MongoDb(dbConnectionSettings);
+            case 'mysql':
+                return new MySql(dbConnectionSettings);
         }
     }
 }
