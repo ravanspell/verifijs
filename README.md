@@ -25,7 +25,7 @@ express-validation is aligant validation library that inpired by laravel freamwo
 
 ## Validation Rules
 
-| [required](/#required) | [size](/#size) | [string](/#string)| [unique(DataBase)](/#uniquetable) | [alpha](/#alpha) | [alpha_dash](/#alphadash)
+| [required](#required) | [size](#size) | [string](#string)| [unique(DataBase)](#uniquetable) | [alpha](#alpha) | [alpha_dash](#alphadash)
 
 #### required
 
