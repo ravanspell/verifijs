@@ -25,7 +25,9 @@ express-validation is aligant validation library that inpired by laravel freamwo
 
 ## Validation Rules
 
-##### required
+| [required](/#required) | [size](/#size) | [string](/#string)| [unique(DataBase)](/#uniquetable) | [alpha](/#alpha) | [alpha_dash](/#alphadash)
+
+#### required
 
 The field under validation must be present in the input data and not empty. A field is considered "empty" if one of the following conditions are true:
 
@@ -33,7 +35,7 @@ The field under validation must be present in the input data and not empty. A fi
 - The value is an empty string.
 - The value is an empty array or empty Countable object.
 
-##### size:value
+#### size:value
 
 The field under validation must have a size matching the given value. For string data, value corresponds to the number of characters. For numeric data, value corresponds to a given integer value (the attribute must also have the numeric or integer rule). For an array, size corresponds to the count of the array. Let's look at some examples:
 
@@ -48,11 +50,11 @@ The field under validation must have a size matching the given value. For string
 'tags' : 'array|size:5';
 ```
 
-##### string
+#### string
 
 The field under validation must be a string.
 
-##### unique:table
+#### unique:table
 
 The field under validation must not exist within the given database table.Request property name should same name as the coulmn name. For example:
 here "userId" is the request object property that hold the value of user's id. The same name sould use for request property and database coulmn name.
@@ -64,39 +66,39 @@ here "userId" is the request object property that hold the value of user's id. T
 'userId': 'unique:table',
 ```
 
-##### alpha
+#### alpha
 
 The field under validation must be entirely alphabetic characters.
 
-##### alpha_dash
+#### alpha_dash
 
 The field under validation may have alpha-numeric characters, as well as dashes and underscores.
 
-##### alpha_num
+#### alpha_num
 
 The field under validation must be entirely alpha-numeric characters.
 
-##### boolean
+#### boolean
 
 The field under validation must be able to be cast as a boolean. Accepted input are `true, false, 1, 0, "1",`and `"0"`.
 
-##### date_equals:date
+#### date_equals:date
 
 The field under validation must be equal to the given date.
 
-##### digits:value
+#### digits:value
 
 The field under validation must be numeric and must have an exact length of value.
 
-##### digits_between:min,max
+#### digits_between:min,max
 
 The field under validation must be numeric and must have a length between the given min and max.
 
-##### email
+#### email
 
 The field under validation must be formatted as an e-mail address.
 
-##### exists:table
+#### exists:table
 
 The field under validation must exist on a given database table.Request property name should same name as the coulmn name. For example:
 here "userId" is the request object property that hold the value of user's id. The same name sould use for request property and database coulmn name.
@@ -108,31 +110,31 @@ here "userId" is the request object property that hold the value of user's id. T
 'userId': 'exists:table',
 ```
 
-##### gt:field
+#### gt:field
 
 The field under validation must be greater than the given field. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the size rule.
 
-##### gte:field
+#### gte:field
 
 The field under validation must be greater than or equal to the given field. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the size rule.
 
-##### in:value1,valie2
+#### in:value1,valie2
 
 The field under validation must be included in the given list of values.
 
-##### json
+#### json
 
 The field under validation must be a valid JSON string.
 
-##### lt:field
+#### lt:field
 
 The field under validation must be less than the given field. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the size rule.
 
-##### regExp:pattern
+#### regExp:pattern
 
 The field under validation must match the given regular expression.
 
-##### lte:field
+#### lte:field
 
 The field under validation must be less than or equal to the given field. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the size rule.
 
