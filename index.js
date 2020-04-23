@@ -107,7 +107,7 @@ class Validation {
         return { status: true };
     }
 
-    async not_inValidation(setOfTerms, value, customMessage) {
+    async notInValidation(setOfTerms, value, customMessage) {
         if (value != undefined) {
             let termsArray = setOfTerms.toLowerCase().split(',')
             if (termsArray.includes(value.toLowerCase())) {
@@ -177,7 +177,7 @@ class Validation {
         };
         return { status: true };
     }
-    async alpha_dashValidation(request, property, customMessage) {
+    async alphaDashValidation(request, property, customMessage) {
         const regExp = this.validateRegExp('[^A-Za-z0-9-_ ]+');
         if (regExp.test(request[property])) {
             let defaultErrorMessage = "Error: Special characters included";
@@ -185,7 +185,7 @@ class Validation {
         };
         return { status: true };
     }
-    async digits_betweenValidation(amount, value, customMessage) {
+    async digitsBetweenValidation(amount, value, customMessage) {
         const [from, to] = amount.split(',').map(Number);
         if (from > value || to < value) {
             let defaultErrorMessage = `Error: Number is out of range`;
@@ -307,7 +307,7 @@ class Validation {
         return { status: true };
     }
 
-    async date_equalsValidation(date, value, customMessage) {
+    async dateEqualsValidation(date, value, customMessage) {
         date = new Date(date);
         value = new Date(value);
         if (date.getTime() != value.getTime()) {
