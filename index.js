@@ -317,6 +317,26 @@ class Validation {
         return { status: true };
     }
 
+    async beforeValidation(date, value, customMessage) {
+        date = new Date(date);
+        value = new Date(value);
+        if (date.getTime() <= value.getTime()) {
+            let defaultErrorMessage = `Error: Date not before`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        }
+        return { status: true };
+    }
+
+    async beforeOrEqualValidation(date, value, customMessage) {
+        date = new Date(date);
+        value = new Date(value);
+        if (date.getTime() < value.getTime()) {
+            let defaultErrorMessage = `Error: Date not before or equal`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        }
+        return { status: true };
+    }
+
     async bailValidation(date, value, customMessage) {
         this.bail = true;
     }

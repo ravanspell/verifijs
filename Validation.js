@@ -17,6 +17,7 @@ let reqObj = {
     birthDate: '1994-02-23',
     nic: 940552850,
     _id: "84155",
+    backDate: '1994-02-22'
 }
 const messages = {
     first_name_required: "First name is required",
@@ -37,9 +38,10 @@ const messages = {
 // }, 'mysql');
 
 //------------- mongodb --------------------
-const validation = new Validation({
-    url: "mongodb+srv://ireshandj2:0724472890@cluster0-2dsaz.mongodb.net/dhananjayatrades",
-}, 'mongodb');
+// const validation = new Validation({
+//     url: "mongodb+srv://ireshandj2:0724472890@cluster0-2dsaz.mongodb.net/dhananjayatrades",
+// }, 'mongodb');
+const validation = new Validation();
 
 validation.check(reqObj, {
     first_name: 'required|string|max:30|regExp:[a-zA-Z ]',
@@ -57,7 +59,7 @@ validation.check(reqObj, {
     mobile: 'digits:9',
     nic: 'digits:9',
     birthDate: 'date_equals:1994-02-23',
-    _id: 'exists:status'
+    backDate: "before:1994-02-23"
 }, messages).then(result => {
     console.log(result);
 });
