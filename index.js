@@ -337,6 +337,15 @@ class Validation {
         return { status: true };
     }
 
+    async distinctValidation(request, property, customMessage) {
+        const userInput = request[property];
+        if (new Set(userInput).size !== userInput.length) {
+            let defaultErrorMessage = "Error: Array contains duplicate values";
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        };
+        return { status: true };
+    }
+
     async bailValidation(date, value, customMessage) {
         this.bail = true;
     }
