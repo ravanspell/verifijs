@@ -25,7 +25,7 @@ express-validation is aligant validation library that inpired by laravel freamwo
 
 ## Validation Rules
 
-| [required](#required) | [size](#size) | [string](#string)| [unique(DataBase)](#uniquetable) | [alpha](#alpha) | [alpha_dash](#alphadash)
+| [required](#required) | [size](#size) | [string](#string)| [unique(DataBase)](#uniquetable) | [alpha](#alpha) | [alphaDash](#alphadash)
 
 #### required
 
@@ -70,11 +70,11 @@ here "userId" is the request object property that hold the value of user's id. T
 
 The field under validation must be entirely alphabetic characters.
 
-#### alpha_dash
+#### alphaDash
 
 The field under validation may have alpha-numeric characters, as well as dashes and underscores.
 
-#### alpha_num
+#### alphaNum
 
 The field under validation must be entirely alpha-numeric characters.
 
@@ -82,7 +82,7 @@ The field under validation must be entirely alpha-numeric characters.
 
 The field under validation must be able to be cast as a boolean. Accepted input are `true, false, 1, 0, "1",`and `"0"`.
 
-#### date_equals:date
+#### dateEquals:date
 
 The field under validation must be equal to the given date.
 
@@ -90,7 +90,7 @@ The field under validation must be equal to the given date.
 
 The field under validation must be numeric and must have an exact length of value.
 
-#### digits_between:min,max
+#### digitsBetween:min,max
 
 The field under validation must be numeric and must have a length between the given min and max.
 
