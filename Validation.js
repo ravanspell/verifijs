@@ -11,6 +11,7 @@ let reqObj = {
     is_enable: true,
     term: 'Yes',
     frequency: 34,
+    person: { name: "exress-validation", address: "github", validation: 45 },
     size: 39,
     amount: [5, 4, 3, 1],
     mobile: 724472890,
@@ -44,11 +45,12 @@ const messages = {
 const validation = new Validation();
 
 validation.check(reqObj, {
-    first_name: 'required|string|max:30|regExp:[a-zA-Z ]',
-    name: 'required|string|max:30|regExp:[a-zA-Z ]|alpha_dash',
+    first_name: 'required|string|max:8|regExp:[a-zA-Z ]',
+    name: 'required|string|max:30|regExp:[a-zA-Z ]|alphaDash',
     age: 'required|integer',
-    frequency: 'digits_between:34,50',
+    frequency: 'digitsBetween:34,50',
     address: 'required|string',
+    person: 'max:4',
     obj: 'required|json',
     email: 'required|email',
     id: 'uuid',
@@ -58,7 +60,7 @@ validation.check(reqObj, {
     amount: 'distinct|gt:3',
     mobile: 'digits:9',
     nic: 'digits:9',
-    birthDate: 'date_equals:1994-02-23',
+    birthDate: 'dateEquals:1994-02-23',
     backDate: "before:1994-02-23"
 }, messages).then(result => {
     console.log(result);
