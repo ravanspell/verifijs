@@ -76,12 +76,18 @@ class Validation {
         return { status: true };
     }
     async minValidation(amount, value, customMessage) {
-        let intValue = parseInt(amount);
-        if (typeof value === 'string') {
-            if (value.length < intValue) {
-                let defaultErrorMessage = `Error: Minimum string length is ${intValue}`;
-                return Util.validationErrorInjector(defaultErrorMessage, customMessage);
-            }
+        let size = 0;
+        amount = parseInt(amount);
+        if (typeof value == 'object') {
+            size = Object.keys(value).length;
+        } else if (typeof value === 'number') {
+            size = value;
+        } else if (typeof value === 'string') {
+            size = value.length;
+        }
+        if (amount > size) {
+            let defaultErrorMessage = `Error: Minimum length is ${amount}`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
@@ -95,7 +101,6 @@ class Validation {
         } else if (typeof value === 'string') {
             size = value.length;
         }
-        console.log('sizexx', size, 'amount', amount);
         if (amount < size) {
             let defaultErrorMessage = `Error: Maximum length is ${amount}`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);

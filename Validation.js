@@ -50,7 +50,7 @@ validation.check(reqObj, {
     age: 'required|integer',
     frequency: 'digitsBetween:34,50',
     address: 'required|string',
-    person: 'max:4',
+    person: 'min:3',
     obj: 'required|json',
     email: 'required|email',
     id: 'uuid',
