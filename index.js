@@ -374,6 +374,19 @@ class Validation {
         return { status: true };
     }
 
+    /**
+     * function isLatitude(lat) {
+        return isFinite(lat) && Math.abs(lat) <= 90;
+        }
+
+        function isLongitude(lng) {
+        return isFinite(lng) && Math.abs(lng) <= 180;
+        }
+     * 
+     *  
+     * 
+     */
+
     async bailValidation(date, value, customMessage) {
         this.bail = true;
     }
