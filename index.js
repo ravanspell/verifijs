@@ -357,6 +357,23 @@ class Validation {
         return { status: true };
     }
 
+    async includesValidation(setOfTerms, value, customMessage) {
+        if (value != undefined) {
+            let isItemIncludes = false;
+            let termsArray = setOfTerms.toLowerCase().split(',')
+            for (const tearm of termsArray) {
+                if (value.toLowerCase().includes(tearm)) {
+                    isItemIncludes = true;
+                }
+            }
+            if (!isItemIncludes) {
+                let defaultErrorMessage = `Error: ${value} is not expect`;
+                return this.validationErrorInjector(defaultErrorMessage, customMessage);
+            }
+        }
+        return { status: true };
+    }
+
     async bailValidation(date, value, customMessage) {
         this.bail = true;
     }
