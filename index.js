@@ -30,26 +30,30 @@ class Validation {
         this.bail = false;
     }
     async check(request, checkObj, messages = {}) {
-        let errorArry = [];
-        for (const property in checkObj) {
-            let check = checkObj[property].split('|');
-            for (let type of check) {
-                if (type.includes(':')) {
-                    let [func, amount] = type.split(':');
-                    let customMessage = this.messageProcessor(messages, property, func);
-                    let validationState = await this[`${func}Validation`](amount, request[property], customMessage, property);
-                    if (!validationState.status)
-                        errorArry.push(validationState.message);
-                }
-                if (!type.includes(':')) {
-                    let customMessage = this.messageProcessor(messages, property, type);
-                    let validationState = await this[`${type}Validation`](request, property, customMessage);
-                    if (!validationState.status)
-                        errorArry.push(validationState.message);
+        try {
+            let errorArry = [];
+            for (const property in checkObj) {
+                let check = checkObj[property].split('|');
+                for (let type of check) {
+                    if (type.includes(':')) {
+                        let [func, amount] = type.split(':');
+                        let customMessage = this.messageProcessor(messages, property, func);
+                        let validationState = await this[`${func}Validation`](amount, request, customMessage, property);
+                        if (!validationState.status)
+                            errorArry.push(validationState.message);
+                    }
+                    if (!type.includes(':')) {
+                        let customMessage = this.messageProcessor(messages, property, type);
+                        let validationState = await this[`${type}Validation`](request, property, customMessage);
+                        if (!validationState.status)
+                            errorArry.push(validationState.message);
+                    }
                 }
             }
+            return { validation: errorArry.length > 0 ? false : true, error: errorArry }
+        } catch (error) {
+            return { error: "unexpected error, Validation rules might invalid" };
         }
-        return { validation: errorArry.length > 0 ? false : true, error: errorArry }
     }
 
     async stringValidation(request, property, customMessage) {
@@ -75,8 +79,10 @@ class Validation {
         };
         return { status: true };
     }
-    async minValidation(amount, value, customMessage) {
+    async minValidation(amount, request, customMessage, property) {
         let size = 0;
+        //get user input value from the request
+        let value = request[property];
         amount = parseInt(amount);
         if (typeof value == 'object') {
             size = Object.keys(value).length;
@@ -86,13 +92,15 @@ class Validation {
             size = value.length;
         }
         if (amount > size) {
-            let defaultErrorMessage = `Error: Minimum length is ${amount}`;
+            let defaultErrorMessage = `Error: ${property} minimum length should be ${amount}`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
-    async maxValidation(amount, value, customMessage) {
+    async maxValidation(amount, request, customMessage, property) {
         let size = 0;
+        //get user input value from the request
+        let value = request[property];
         amount = parseInt(amount);
         if (typeof value == 'object') {
             size = Object.keys(value).length;
@@ -102,28 +110,32 @@ class Validation {
             size = value.length;
         }
         if (amount < size) {
-            let defaultErrorMessage = `Error: Maximum length is ${amount}`;
+            let defaultErrorMessage = `Error: ${property} maximum length should be ${amount}`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
-    async inValidation(setOfTerms, value, customMessage) {
+    async inValidation(setOfTerms, request, customMessage, property) {
+        //get user input value from the request
+        let value = request[property];
         if (value != undefined) {
             let termsArray = setOfTerms.toLowerCase().split(',')
             if (!termsArray.includes(value.toLowerCase())) {
-                let defaultErrorMessage = `Error: ${value} is not expect`;
-                return this.validationErrorInjector(defaultErrorMessage, customMessage);
+                let defaultErrorMessage = `Error: ${value} is not expect in ${property}`;
+                return Util.validationErrorInjector(defaultErrorMessage, customMessage);
             }
         }
         return { status: true };
     }
 
-    async notInValidation(setOfTerms, value, customMessage) {
+    async notInValidation(setOfTerms, request, customMessage, property) {
+        //get user input value from the request
+        let value = request[property];
         if (value != undefined) {
             let termsArray = setOfTerms.toLowerCase().split(',')
             if (termsArray.includes(value.toLowerCase())) {
                 let defaultErrorMessage = `Error: ${value} is not expect`;
-                return this.validationErrorInjector(defaultErrorMessage, customMessage);
+                return Util.validationErrorInjector(defaultErrorMessage, customMessage);
             }
         }
         return { status: true };
@@ -175,15 +187,17 @@ class Validation {
         let validationValue = request[property];
         console.log('is enable value is', !validationValue == true);
         if (!(validationValue === 1 || validationValue === 0 || validationValue === true || validationValue === false)) {
-            let defaultErrorMessage = "Error: Invalid boolean value";
-            return this.validationErrorInjector(defaultErrorMessage, customMessage);
+            let defaultErrorMessage = `Error: ${property} has invalid boolean value`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
-    async regExpValidation(regExpression, value, customMessage) {
+    async regExpValidation(regExpression, request, customMessage, property) {
+        //get user input value from the request
+        let value = request[property];
         const regExp = this.validateRegExp(regExpression);
         if (!regExp.test(value)) {
-            let defaultErrorMessage = "Error: Invalid input";
+            let defaultErrorMessage = `Error: ${property} has invalid input`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
@@ -191,20 +205,24 @@ class Validation {
     async alphaDashValidation(request, property, customMessage) {
         const regExp = this.validateRegExp('[^A-Za-z0-9-_ ]+');
         if (regExp.test(request[property])) {
-            let defaultErrorMessage = "Error: Special characters included";
+            let defaultErrorMessage = `Error: ${property} has special characters`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
-    async digitsBetweenValidation(amount, value, customMessage) {
+    async digitsBetweenValidation(amount, request, customMessage, property) {
+        //get user input value from the request
+        const value = request[property];
         const [from, to] = amount.split(',').map(Number);
         if (from > value || to < value) {
-            let defaultErrorMessage = `Error: Number is out of range`;
+            let defaultErrorMessage = `Error: ${property} Number is out of range`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
-    async betweenValidation(amount, value, customMessage) {
+    async betweenValidation(amount, request, customMessage, property) {
+        //get user input value from the request
+        const value = request[property];
         let size = 0;
         const [from, to] = amount.split(',').map(Number);
         if (typeof value == 'object') {
@@ -215,13 +233,15 @@ class Validation {
             size = value.length;
         }
         if (from > size || to < size) {
-            let defaultErrorMessage = `Error: data is out of range`;
+            let defaultErrorMessage = `Error: ${property} data is out of range`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
 
-    async ltValidation(amount, value, customMessage) {
+    async ltValidation(amount, request, customMessage, property) {
+        //get user input value from the request
+        const value = request[property];
         let size = 0;
         amount = parseInt(amount);
         if (typeof value == 'object') {
@@ -232,13 +252,15 @@ class Validation {
             size = value.length;
         }
         if (amount <= size) {
-            let defaultErrorMessage = `Error: value is not less than`;
+            let defaultErrorMessage = `Error: ${property} value is not less than ${amount}`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
 
-    async lteValidation(amount, value, customMessage) {
+    async lteValidation(amount, request, customMessage, property) {
+        //get user input value from the request
+        const value = request[property];
         let size = 0;
         amount = parseInt(amount);
         if (typeof value == 'object') {
@@ -249,13 +271,15 @@ class Validation {
             size = value.length;
         }
         if (amount < size) {
-            let defaultErrorMessage = `Error: value is not less than or equal`;
+            let defaultErrorMessage = `Error: ${property} value is not less than or equal to ${amount}`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
 
-    async gtValidation(amount, value, customMessage) {
+    async gtValidation(amount, request, customMessage, property) {
+        //get user input value from the request
+        const value = request[property];
         let size = 0;
         amount = parseInt(amount);
         if (typeof value == 'object') {
@@ -266,13 +290,15 @@ class Validation {
             size = value.length;
         }
         if (amount >= size) {
-            let defaultErrorMessage = `Error: value is not grater than`;
+            let defaultErrorMessage = `Error: ${property} value is not grater than to ${amount}`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
 
-    async gteValidation(amount, value, customMessage) {
+    async gteValidation(amount, request, customMessage, property) {
+        //get user input value from the request
+        let value = request[property];
         let size = 0;
         amount = parseInt(amount);
         if (typeof value == 'object') {
@@ -283,13 +309,15 @@ class Validation {
             size = value.length;
         }
         if (amount > size) {
-            let defaultErrorMessage = `Error: value is not grater than or equal`;
+            let defaultErrorMessage = `Error: ${property} value is not grater than or equal to ${amount}`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
 
-    async sizeValidation(amount, value, customMessage) {
+    async sizeValidation(amount, request, customMessage, property) {
+        //get user input value from the request
+        let value = request[property];
         let size = 0;
         amount = parseInt(amount);
         if (typeof value == 'object') {
@@ -301,48 +329,54 @@ class Validation {
         }
         console.log('size', size, 'amount', amount);
         if (amount != size) {
-            let defaultErrorMessage = `Error: value is not equal`;
+            let defaultErrorMessage = `Error: ${property} value is not equal to ${value}`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
 
-    async digitsValidation(amount, value, customMessage) {
+    async digitsValidation(amount, request, customMessage, property) {
+        //get user input value from the request
+        console.log(request)
+        let value = request[property];
         amount = parseInt(amount);
         value = value.toString().length;
         console.log('amount', amount, 'length', value);
         if (amount != value) {
-            let defaultErrorMessage = `Error: Number does not have ${amount} digits`;
+            let defaultErrorMessage = `Error: ${property} number does not have ${amount} digits`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
 
-    async dateEqualsValidation(date, value, customMessage) {
+    async dateEqualsValidation(date, request, customMessage, property) {
         date = new Date(date);
-        value = new Date(value);
+        //get user input value from the request
+        let value = new Date(request[property]);
         if (date.getTime() != value.getTime()) {
-            let defaultErrorMessage = `Error: Date not equal`;
+            let defaultErrorMessage = `Error: ${property} date not equal`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
 
-    async beforeValidation(date, value, customMessage) {
+    async beforeValidation(date, request, customMessage, property) {
         date = new Date(date);
-        value = new Date(value);
+        //get user input value from the request
+        let value = new Date(request[property]);
         if (date.getTime() <= value.getTime()) {
-            let defaultErrorMessage = `Error: Date not before`;
+            let defaultErrorMessage = `Error: ${property} date not before`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
 
-    async beforeOrEqualValidation(date, value, customMessage) {
+    async beforeOrEqualValidation(date, request, customMessage, property) {
         date = new Date(date);
-        value = new Date(value);
+        //get user input value from the request
+        let value = new Date(request[property]);
         if (date.getTime() < value.getTime()) {
-            let defaultErrorMessage = `Error: Date not before or equal`;
+            let defaultErrorMessage = `Error: ${property} date not before or equal`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
@@ -351,13 +385,15 @@ class Validation {
     async distinctValidation(request, property, customMessage) {
         const userInput = request[property];
         if (new Set(userInput).size !== userInput.length) {
-            let defaultErrorMessage = "Error: Array contains duplicate values";
+            let defaultErrorMessage = `Error: ${property} array contains duplicate values`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
 
-    async includesValidation(setOfTerms, value, customMessage) {
+    async includesValidation(setOfTerms, request, customMessage, property) {
+        //get user input value from the request
+        let value = request[property];
         if (value != undefined) {
             let isItemIncludes = false;
             let termsArray = setOfTerms.toLowerCase().split(',')
@@ -368,11 +404,24 @@ class Validation {
             }
             if (!isItemIncludes) {
                 let defaultErrorMessage = `Error: ${value} is not expect`;
-                return this.validationErrorInjector(defaultErrorMessage, customMessage);
+                return Util.validationErrorInjector(defaultErrorMessage, customMessage);
             }
         }
         return { status: true };
     }
+
+    /**
+     * function isLatitude(lat) {
+        return isFinite(lat) && Math.abs(lat) <= 90;
+        }
+
+        function isLongitude(lng) {
+        return isFinite(lng) && Math.abs(lng) <= 180;
+        }
+     * 
+     *  
+     * 
+     */
 
     async bailValidation(date, value, customMessage) {
         this.bail = true;
