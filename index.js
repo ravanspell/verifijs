@@ -19,12 +19,16 @@ class Validation {
                     if (type.includes(':')) {
                         let [func, amount] = type.split(':');
                         let customMessage = this.messageProcessor(messages, property, func);
+                        //check validation rule        
+                        this.validateValidationRules(func);
                         let validationState = await this[`${func}Validation`](amount, request, customMessage, property);
                         if (!validationState.status)
                             errorArry.push(validationState.message);
                     }
                     if (!type.includes(':')) {
                         let customMessage = this.messageProcessor(messages, property, type);
+                        //check validation rule        
+                        this.validateValidationRules(type);
                         let validationState = await this[`${type}Validation`](request, property, customMessage);
                         if (!validationState.status)
                             errorArry.push(validationState.message);
@@ -398,13 +402,18 @@ class Validation {
         function isLongitude(lng) {
         return isFinite(lng) && Math.abs(lng) <= 180;
         }
-     * 
      *  
      * 
      */
 
     async bailValidation(date, value, customMessage) {
         this.bail = true;
+    }
+
+    validateValidationRules(rule) {
+        const check = this.__proto__.hasOwnProperty(`${rule}Validation`);
+        const check2 = this.hasOwnProperty(`${rule}Validation`);
+        if (!(check || check2)) throw { message: `${rule} is an invalid validation rule` };
     }
     //Process custom error messages which user defined
     messageProcessor(messages, property, type) {
@@ -418,7 +427,6 @@ class Validation {
 
     // database validations
     /**
-     * 
      * @param {Object} dbConnectionSettings mysql dbConnection settings 
      * {
      *   host: "host",
@@ -432,20 +440,17 @@ class Validation {
             if (dbConnectionSettings == null)
                 throw { message: 'Mysql database connection settings not found' };
             const mysqlstuff = new MySql(dbConnectionSettings);
+            //this.prototype = mysqlstuff;
             Object.assign(this, mysqlstuff);
         } catch (error) {
             console.log(error.message);
         }
     }
     /**
-     * 
      * @param {Object} dbConnectionSettings mongodb dbConnection settings 
      * {
-     *   host: "host",
-     *   user: "data base user",
-     *   password: "*****",
-     *   database: "data base name" 
-     * }
+     * url: "*********",
+     * }  
      */
     initMongoDbConnection(dbConnectionSettings = null) {
         try {
