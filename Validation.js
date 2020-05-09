@@ -7,7 +7,7 @@ let reqObj = {
     address: 'No234Knnimahara',
     obj: '{"name":"kalo"}',
     email: 'ireshandj2@gmail.com',
-    barcode: 3454645,//522,
+    barcode: 522,
     is_enable: true,
     term: 'yes',
     frequency: 34,
@@ -33,7 +33,7 @@ const messages = {
 }
 
 //------------- mysql --------------------
-// validation.initMongoDbConnection({
+// validation.initMysqlConnection({
 //     host: "localhost",
 //     user: "root",
 //     password: "",
