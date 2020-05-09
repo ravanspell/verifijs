@@ -1,32 +1,13 @@
 /**
  * Author: Ireshan M Pathirana 
  * Licence: GNU Public Licence
- * Usage: Node Js 
+ * Usage: Node.js
  */
 const Util = require('./util');
-const dbFactory = require('./dbFactory');
+const MySql = require('./database/mysql');
+const MongoDb = require('./database/mongodb');
 class Validation {
-    /**
-     * @param {object} dbConnectionSettings dbConnection settings optional
-     * @param {string} dbType mongodb mysql postgresql  optional
-     * -----normal usage (without db validation)
-     * const validation = new Validation();
-     * -----mysql------
-     * const validation = new Validation({
-     *         host: "host",
-     *         user: "data base user",
-     *         password: "*****",
-     *         database: "data base name" 
-     * }, 
-     * 'mysql');  // type of dbms 
-     * -----mongodb-----
-     * const validation = new Validation({
-     * url: "mongo db connection url",
-     * }, 
-     * 'mongodb');  // type of dbms
-     */
-    constructor(dbConnectionSettings = null, dbType = null) {
-        Object.assign(this, dbFactory.InitDbService(dbConnectionSettings, dbType));
+    constructor() {
         this.bail = false;
     }
     async check(request, checkObj, messages = {}) {
@@ -52,10 +33,9 @@ class Validation {
             }
             return { validation: errorArry.length > 0 ? false : true, error: errorArry }
         } catch (error) {
-            return { error: "unexpected error, Validation rules might invalid" };
+            return { error: error.message };
         }
     }
-
     async stringValidation(request, property, customMessage) {
         if (!(typeof request[property] === 'string')) {
             let defaultErrorMessage = "Error: Invalid string";
@@ -434,6 +414,48 @@ class Validation {
     //Returns regular expression object for given reg exp string
     validateRegExp(regexp) {
         return new RegExp(regexp);
+    }
+
+    // database validations
+    /**
+     * 
+     * @param {Object} dbConnectionSettings mysql dbConnection settings 
+     * {
+     *   host: "host",
+     *   user: "data base user",
+     *   password: "*****",
+     *   database: "data base name" 
+     * }
+     */
+    initMysqlConnection(dbConnectionSettings = null) {
+        try {
+            if (dbConnectionSettings == null)
+                throw { message: 'Mysql database connection settings not found' };
+            const mysqlstuff = new MySql(dbConnectionSettings);
+            Object.assign(this, mysqlstuff);
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+    /**
+     * 
+     * @param {Object} dbConnectionSettings mongodb dbConnection settings 
+     * {
+     *   host: "host",
+     *   user: "data base user",
+     *   password: "*****",
+     *   database: "data base name" 
+     * }
+     */
+    initMongoDbConnection(dbConnectionSettings = null) {
+        try {
+            if (dbConnectionSettings == null)
+                throw { message: 'Mongodb database connection settings not found' };
+            const mongoDbStuff = new MongoDb(dbConnectionSettings);
+            Object.assign(this, mongoDbStuff);
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 }
 module.exports = Validation;
