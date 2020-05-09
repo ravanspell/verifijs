@@ -6,10 +6,10 @@ let reqObj = {
     age: 45,
     address: 'No234Knnimahara',
     obj: '{"name":"kalo"}',
-    email: 'ireshandj2@yahoo.com',//@gmail.com',
-    id: 'f1277d16-5cb9-43f6-95ce-a5e22e12cdaa',
-    is_enable: "dfdf",
-    term: 'Ireshan',
+    email: 'ireshandj2@gmail.com',
+    barcode: 522,
+    is_enable: true,
+    term: 'yes',
     frequency: 34,
     person: { name: "exress-validation", address: "github", validation: 45 },
     size: 20,
@@ -27,37 +27,42 @@ const messages = {
     name_alpha: "Name must be include letters and numbers",
     mobile_digits: "mobile number should contain 9 digitas",
     //   nic_digits: "nic number should contain 10 digitas",
-    birthDate_date_equals: "to day is not my birth day"
+    birthDate_date_equals: "to day is not my birth day",
+    barcode_exists: "Invalid user type"
     // _id_unique: "this is not uniue try another one"
 }
+
 //------------- mysql --------------------
-// const validation = new Validation({
+// validation.initMongoDbConnection({
 //     host: "localhost",
 //     user: "root",
 //     password: "",
 //     database: "dhananjaya_treades"
-// }, 'mysql');
+// });
 
 //------------- mongodb --------------------
-// const validation = new Validation({
+// validation.initMongoDbConnection({
 //     url: "mongodb+srv://ireshandj2:0724472890@cluster0-2dsaz.mongodb.net/dhananjayatrades",
-// }, 'mongodb');
-const validation = new Validation();
+// });
 
+const validation = new Validation();
+validation.initMongoDbConnection({
+    url: "mongodb+srv://ireshandj2:0724472890@cluster0-2dsaz.mongodb.net/dhananjayatrades",
+});
 validation.check(reqObj, {
     first_name: 'required|string|max:8|regExp:[a-zA-Z ]',
     name: 'required|string|max:30|regExp:[a-zA-Z ]|alphaDash',
     age: 'required|integer',
     frequency: 'digitsBetween:34,50',
     address: 'required|string',
-    person: 'max:2',
+    person: 'max:3',
     obj: 'required|json',
     email: 'required|email|includes:@gmail.com,@hotmail.com',
-    id: 'uuid',
+    barcode: 'exists:orders,barcode',
     is_enable: 'boolean',
     term: 'in:yes,no,maybe',
-    size: 'lt:40|gt:20',
-    amount: 'distinct|gt:3|between:5,9',
+    size: 'lt:40|gt:19',
+    amount: 'distinct|gt:3',
     mobile: 'digits:9',
     nic: 'digits:9',
     birthDate: 'dateEquals:1994-02-23',
