@@ -25,7 +25,7 @@ express-validation is validation library that inspired by laravel freamwork.
 
 ## Validation Rules
 
-| [required](#required) | [size](#size) | [string](#string)| [unique(DataBase)](#uniquetable) | [alpha](#alpha) | [alphaDash](#alphadash)
+| [required](#required) | [size](#size) | [string](#string)| [unique(DataBase)](#uniquetable) | [alpha](#alpha) | [alphaDash](#alphadash) |[database_validation_rules](#database-validation-rules-uniqueexists) | [alphaNum](#alphanum) | [boolean](#boolean) | [dateEquals](#dateequalsdate) | [digits](#digitsvalue) | [digits](#digitsvalue) | [digitsBetween](#digitsbetweenminmax) | [email](#email) | [graterThan](#gtfield) | [graterThanOrEqual](#gtefield) | [in](#invalue1valie2) | [json](#json) | [lessThan](#ltfield) | [regExp](#regexppattern) | [lessThanOrEqual](#ltefield)
 
 #### required
 
