@@ -1,57 +1,45 @@
 /**
  * Author: Ireshan M Pathirana 
  * Licence: GNU Public Licence
- * Usage: Node Js 
+ * Usage: Node.js
  */
 const Util = require('./util');
-const dbFactory = require('./dbFactory');
+const MySql = require('./database/mysql');
+const MongoDb = require('./database/mongodb');
 class Validation {
-    /**
-     * @param {object} dbConnectionSettings dbConnection settings optional
-     * @param {string} dbType mongodb mysql postgresql  optional
-     * -----normal usage (without db validation)
-     * const validation = new Validation();
-     * -----mysql------
-     * const validation = new Validation({
-     *         host: "host",
-     *         user: "data base user",
-     *         password: "*****",
-     *         database: "data base name" 
-     * }, 
-     * 'mysql');  // type of dbms 
-     * -----mongodb-----
-     * const validation = new Validation({
-     * url: "mongo db connection url",
-     * }, 
-     * 'mongodb');  // type of dbms
-     */
-    constructor(dbConnectionSettings = null, dbType = null) {
-        Object.assign(this, dbFactory.InitDbService(dbConnectionSettings, dbType));
+    constructor() {
         this.bail = false;
     }
     async check(request, checkObj, messages = {}) {
-        let errorArry = [];
-        for (const property in checkObj) {
-            let check = checkObj[property].split('|');
-            for (let type of check) {
-                if (type.includes(':')) {
-                    let [func, amount] = type.split(':');
-                    let customMessage = this.messageProcessor(messages, property, func);
-                    let validationState = await this[`${func}Validation`](amount, request[property], customMessage, property);
-                    if (!validationState.status)
-                        errorArry.push(validationState.message);
-                }
-                if (!type.includes(':')) {
-                    let customMessage = this.messageProcessor(messages, property, type);
-                    let validationState = await this[`${type}Validation`](request, property, customMessage);
-                    if (!validationState.status)
-                        errorArry.push(validationState.message);
+        try {
+            let errorArry = [];
+            for (const property in checkObj) {
+                let check = checkObj[property].split('|');
+                for (let type of check) {
+                    if (type.includes(':')) {
+                        let [func, amount] = type.split(':');
+                        let customMessage = this.messageProcessor(messages, property, func);
+                        //check validation rule        
+                        this.validateValidationRules(func);
+                        let validationState = await this[`${func}Validation`](amount, request, customMessage, property);
+                        if (!validationState.status)
+                            errorArry.push(validationState.message);
+                    }
+                    if (!type.includes(':')) {
+                        let customMessage = this.messageProcessor(messages, property, type);
+                        //check validation rule        
+                        this.validateValidationRules(type);
+                        let validationState = await this[`${type}Validation`](request, property, customMessage);
+                        if (!validationState.status)
+                            errorArry.push(validationState.message);
+                    }
                 }
             }
+            return { validation: errorArry.length > 0 ? false : true, error: errorArry }
+        } catch (error) {
+            return { error: error.message };
         }
-        return { validation: errorArry.length > 0 ? false : true, error: errorArry }
     }
-
     async stringValidation(request, property, customMessage) {
         if (!(typeof request[property] === 'string')) {
             let defaultErrorMessage = "Error: Invalid string";
@@ -75,44 +63,63 @@ class Validation {
         };
         return { status: true };
     }
-    async minValidation(amount, value, customMessage) {
-        let intValue = parseInt(amount);
-        if (typeof value === 'string') {
-            if (value.length < intValue) {
-                let defaultErrorMessage = `Error: Minimum string length is ${intValue}`;
-                return Util.validationErrorInjector(defaultErrorMessage, customMessage);
-            }
+    async minValidation(amount, request, customMessage, property) {
+        let size = 0;
+        //get user input value from the request
+        let value = request[property];
+        amount = parseInt(amount);
+        if (typeof value == 'object') {
+            size = Object.keys(value).length;
+        } else if (typeof value === 'number') {
+            size = value;
+        } else if (typeof value === 'string') {
+            size = value.length;
+        }
+        if (amount > size) {
+            let defaultErrorMessage = `Error: ${property} minimum length should be ${amount}`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
-    async maxValidation(amount, value, customMessage) {
-        console.log(`amount is ${amount} value is ${value}`);
-        let intValue = parseInt(amount);
-        if (typeof value === 'string') {
-            if (value.length >= intValue) {
-                let defaultErrorMessage = `Error: Maximum string length is ${intValue}`;
-                return Util.validationErrorInjector(defaultErrorMessage, customMessage);
-            };
+    async maxValidation(amount, request, customMessage, property) {
+        let size = 0;
+        //get user input value from the request
+        let value = request[property];
+        amount = parseInt(amount);
+        if (typeof value == 'object') {
+            size = Object.keys(value).length;
+        } else if (typeof value === 'number') {
+            size = value;
+        } else if (typeof value === 'string') {
+            size = value.length;
+        }
+        if (amount < size) {
+            let defaultErrorMessage = `Error: ${property} maximum length should be ${amount}`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
-    async inValidation(setOfTerms, value, customMessage) {
+    async inValidation(setOfTerms, request, customMessage, property) {
+        //get user input value from the request
+        let value = request[property];
         if (value != undefined) {
             let termsArray = setOfTerms.toLowerCase().split(',')
             if (!termsArray.includes(value.toLowerCase())) {
-                let defaultErrorMessage = `Error: ${value} is not expect`;
-                return this.validationErrorInjector(defaultErrorMessage, customMessage);
+                let defaultErrorMessage = `Error: ${value} is not expect in ${property}`;
+                return Util.validationErrorInjector(defaultErrorMessage, customMessage);
             }
         }
         return { status: true };
     }
 
-    async not_inValidation(setOfTerms, value, customMessage) {
+    async notInValidation(setOfTerms, request, customMessage, property) {
+        //get user input value from the request
+        let value = request[property];
         if (value != undefined) {
             let termsArray = setOfTerms.toLowerCase().split(',')
             if (termsArray.includes(value.toLowerCase())) {
                 let defaultErrorMessage = `Error: ${value} is not expect`;
-                return this.validationErrorInjector(defaultErrorMessage, customMessage);
+                return Util.validationErrorInjector(defaultErrorMessage, customMessage);
             }
         }
         return { status: true };
@@ -164,36 +171,42 @@ class Validation {
         let validationValue = request[property];
         console.log('is enable value is', !validationValue == true);
         if (!(validationValue === 1 || validationValue === 0 || validationValue === true || validationValue === false)) {
-            let defaultErrorMessage = "Error: Invalid boolean value";
-            return this.validationErrorInjector(defaultErrorMessage, customMessage);
+            let defaultErrorMessage = `Error: ${property} has invalid boolean value`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
-    async regExpValidation(regExpression, value, customMessage) {
+    async regExpValidation(regExpression, request, customMessage, property) {
+        //get user input value from the request
+        let value = request[property];
         const regExp = this.validateRegExp(regExpression);
         if (!regExp.test(value)) {
-            let defaultErrorMessage = "Error: Invalid input";
+            let defaultErrorMessage = `Error: ${property} has invalid input`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
-    async alpha_dashValidation(request, property, customMessage) {
+    async alphaDashValidation(request, property, customMessage) {
         const regExp = this.validateRegExp('[^A-Za-z0-9-_ ]+');
         if (regExp.test(request[property])) {
-            let defaultErrorMessage = "Error: Special characters included";
+            let defaultErrorMessage = `Error: ${property} has special characters`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         };
         return { status: true };
     }
-    async digits_betweenValidation(amount, value, customMessage) {
+    async digitsBetweenValidation(amount, request, customMessage, property) {
+        //get user input value from the request
+        const value = request[property];
         const [from, to] = amount.split(',').map(Number);
         if (from > value || to < value) {
-            let defaultErrorMessage = `Error: Number is out of range`;
+            let defaultErrorMessage = `Error: ${property} Number is out of range`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
-    async betweenValidation(amount, value, customMessage) {
+    async betweenValidation(amount, request, customMessage, property) {
+        //get user input value from the request
+        const value = request[property];
         let size = 0;
         const [from, to] = amount.split(',').map(Number);
         if (typeof value == 'object') {
@@ -204,13 +217,15 @@ class Validation {
             size = value.length;
         }
         if (from > size || to < size) {
-            let defaultErrorMessage = `Error: data is out of range`;
+            let defaultErrorMessage = `Error: ${property} data is out of range`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
 
-    async ltValidation(amount, value, customMessage) {
+    async ltValidation(amount, request, customMessage, property) {
+        //get user input value from the request
+        const value = request[property];
         let size = 0;
         amount = parseInt(amount);
         if (typeof value == 'object') {
@@ -221,13 +236,15 @@ class Validation {
             size = value.length;
         }
         if (amount <= size) {
-            let defaultErrorMessage = `Error: value is not less than`;
+            let defaultErrorMessage = `Error: ${property} value is not less than ${amount}`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
 
-    async lteValidation(amount, value, customMessage) {
+    async lteValidation(amount, request, customMessage, property) {
+        //get user input value from the request
+        const value = request[property];
         let size = 0;
         amount = parseInt(amount);
         if (typeof value == 'object') {
@@ -238,13 +255,15 @@ class Validation {
             size = value.length;
         }
         if (amount < size) {
-            let defaultErrorMessage = `Error: value is not less than or equal`;
+            let defaultErrorMessage = `Error: ${property} value is not less than or equal to ${amount}`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
 
-    async gtValidation(amount, value, customMessage) {
+    async gtValidation(amount, request, customMessage, property) {
+        //get user input value from the request
+        const value = request[property];
         let size = 0;
         amount = parseInt(amount);
         if (typeof value == 'object') {
@@ -255,13 +274,15 @@ class Validation {
             size = value.length;
         }
         if (amount >= size) {
-            let defaultErrorMessage = `Error: value is not grater than`;
+            let defaultErrorMessage = `Error: ${property} value is not grater than to ${amount}`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
 
-    async gteValidation(amount, value, customMessage) {
+    async gteValidation(amount, request, customMessage, property) {
+        //get user input value from the request
+        let value = request[property];
         let size = 0;
         amount = parseInt(amount);
         if (typeof value == 'object') {
@@ -272,13 +293,15 @@ class Validation {
             size = value.length;
         }
         if (amount > size) {
-            let defaultErrorMessage = `Error: value is not grater than or equal`;
+            let defaultErrorMessage = `Error: ${property} value is not grater than or equal to ${amount}`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
 
-    async sizeValidation(amount, value, customMessage) {
+    async sizeValidation(amount, request, customMessage, property) {
+        //get user input value from the request
+        let value = request[property];
         let size = 0;
         amount = parseInt(amount);
         if (typeof value == 'object') {
@@ -290,35 +313,107 @@ class Validation {
         }
         console.log('size', size, 'amount', amount);
         if (amount != size) {
-            let defaultErrorMessage = `Error: value is not equal`;
+            let defaultErrorMessage = `Error: ${property} value is not equal to ${value}`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
 
-    async digitsValidation(amount, value, customMessage) {
+    async digitsValidation(amount, request, customMessage, property) {
+        //get user input value from the request
+        console.log(request)
+        let value = request[property];
         amount = parseInt(amount);
         value = value.toString().length;
         console.log('amount', amount, 'length', value);
         if (amount != value) {
-            let defaultErrorMessage = `Error: Number does not have ${amount} digits`;
+            let defaultErrorMessage = `Error: ${property} number does not have ${amount} digits`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
 
-    async date_equalsValidation(date, value, customMessage) {
+    async dateEqualsValidation(date, request, customMessage, property) {
         date = new Date(date);
-        value = new Date(value);
+        //get user input value from the request
+        let value = new Date(request[property]);
         if (date.getTime() != value.getTime()) {
-            let defaultErrorMessage = `Error: Date not equal`;
+            let defaultErrorMessage = `Error: ${property} date not equal`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         }
         return { status: true };
     }
+
+    async beforeValidation(date, request, customMessage, property) {
+        date = new Date(date);
+        //get user input value from the request
+        let value = new Date(request[property]);
+        if (date.getTime() <= value.getTime()) {
+            let defaultErrorMessage = `Error: ${property} date not before`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        }
+        return { status: true };
+    }
+
+    async beforeOrEqualValidation(date, request, customMessage, property) {
+        date = new Date(date);
+        //get user input value from the request
+        let value = new Date(request[property]);
+        if (date.getTime() < value.getTime()) {
+            let defaultErrorMessage = `Error: ${property} date not before or equal`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        }
+        return { status: true };
+    }
+
+    async distinctValidation(request, property, customMessage) {
+        const userInput = request[property];
+        if (new Set(userInput).size !== userInput.length) {
+            let defaultErrorMessage = `Error: ${property} array contains duplicate values`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        };
+        return { status: true };
+    }
+
+    async includesValidation(setOfTerms, request, customMessage, property) {
+        //get user input value from the request
+        let value = request[property];
+        if (value != undefined) {
+            let isItemIncludes = false;
+            let termsArray = setOfTerms.toLowerCase().split(',')
+            for (const tearm of termsArray) {
+                if (value.toLowerCase().includes(tearm)) {
+                    isItemIncludes = true;
+                }
+            }
+            if (!isItemIncludes) {
+                let defaultErrorMessage = `Error: ${value} is not expect`;
+                return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+            }
+        }
+        return { status: true };
+    }
+
+    /**
+     * function isLatitude(lat) {
+        return isFinite(lat) && Math.abs(lat) <= 90;
+        }
+
+        function isLongitude(lng) {
+        return isFinite(lng) && Math.abs(lng) <= 180;
+        }
+     *  
+     * 
+     */
 
     async bailValidation(date, value, customMessage) {
         this.bail = true;
+    }
+
+    validateValidationRules(rule) {
+        const check = this.__proto__.hasOwnProperty(`${rule}Validation`);
+        const check2 = this.hasOwnProperty(`${rule}Validation`);
+        if (!(check || check2)) throw { message: `${rule} is an invalid validation rule` };
     }
     //Process custom error messages which user defined
     messageProcessor(messages, property, type) {
@@ -328,6 +423,44 @@ class Validation {
     //Returns regular expression object for given reg exp string
     validateRegExp(regexp) {
         return new RegExp(regexp);
+    }
+
+    // database validations
+    /**
+     * @param {Object} dbConnectionSettings mysql dbConnection settings 
+     * {
+     *   host: "host",
+     *   user: "data base user",
+     *   password: "*****",
+     *   database: "data base name" 
+     * }
+     */
+    initMysqlConnection(dbConnectionSettings = null) {
+        try {
+            if (dbConnectionSettings == null)
+                throw { message: 'Mysql database connection settings not found' };
+            const mysqlstuff = new MySql(dbConnectionSettings);
+            //this.prototype = mysqlstuff;
+            Object.assign(this, mysqlstuff);
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+    /**
+     * @param {Object} dbConnectionSettings mongodb dbConnection settings 
+     * {
+     * url: "*********",
+     * }  
+     */
+    initMongoDbConnection(dbConnectionSettings = null) {
+        try {
+            if (dbConnectionSettings == null)
+                throw { message: 'Mongodb database connection settings not found' };
+            const mongoDbStuff = new MongoDb(dbConnectionSettings);
+            Object.assign(this, mongoDbStuff);
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 }
 module.exports = Validation;

@@ -1,6 +1,6 @@
 # express-validation
 
-Agilent and light weight java script/node js validation library.
+Light weight java script/node js validation library.
 
 ### Installation
 
@@ -14,10 +14,10 @@ Please make sure to update tests as appropriate.
 
 ## Why express-validation?
 
-express-validation is aligant validation library that inpired by laravel freamwork.
+express-validation is validation library that inspired by laravel freamwork.
 
 - Express validation is very light weight validation library.
-- Express validation use very limited number of dependencies. (It is useing database driver packges such as mysql,mongodb,postgresql only).
+- Express validation use very limited number of dependencies. (It is useing database driver packges such as mysql,mongodb only) The good news is you only need to install either of this database driver which means if you use mysql database you only need to install mysql npm driver.
 - Express validation define validation enable defined chained validation rule schema.It allow use multiple validations to single input.
 
 - It allow use even database based validations. For instance : If you want to check some data wether already in the database or not express validation allow check value by simply define a schema.
@@ -25,7 +25,7 @@ express-validation is aligant validation library that inpired by laravel freamwo
 
 ## Validation Rules
 
-| [required](#required) | [size](#size) | [string](#string)| [unique(DataBase)](#uniquetable) | [alpha](#alpha) | [alpha_dash](#alphadash)
+| [required](#required) | [size](#size) | [string](#string)| [unique(DataBase)](#uniquetable) | [alpha](#alpha) | [alphaDash](#alphadash)
 
 #### required
 
@@ -54,27 +54,81 @@ The field under validation must have a size matching the given value. For string
 
 The field under validation must be a string.
 
-#### unique:table
+### Database Validation rules (unique,exists)
 
-The field under validation must not exist within the given database table.Request property name should same name as the coulmn name. For example:
-here "userId" is the request object property that hold the value of user's id. The same name sould use for request property and database coulmn name.
+Database validation rules helps to validate your input data against data that stored in your application's database. for that you need to install node js database drivers that supports your particular database.
 
-**currantly supports Mongodb and MySql only**
+if you are using mysql database, you need to install manually mysql node.js drivers using below npm command.
+
+`npm i mysql@2.18.1`
+
+if you are using mongodb, you need to install manually mongodb node.js drivers using below npm command.
+
+`npm i mongodb@3.5.7`
+
+**_NOTE: If you don't intend to use below validations (unique,exists) You don't need to install any theired party library._**
+
+Now you need to initiate database connection.
+
+```node
+// Validation object creation
+const validation = new Validation();
+```
+
+if you use mongo db
+
+```node
+validation.initMongoDbConnection({
+  url: "url to your mongodb",
+});
+```
+
+if you use mysql
+
+```node
+validation.initMysqlConnection({
+  host: "host",
+  user: "username",
+  password: "password",
+  database: "database name",
+});
+```
+
+This configurations will make a database connection.
+
+#### unique:table,column
+
+The field under validation must not exist within the given database table.
+The `column` option may be used to specify the field's corresponding database `column`. If the column option is not specified, the field name will be used.
+
+**Currently supports Mongodb and MySql only**
 
 ```node
 //validation rule
-'userId': 'unique:table',
+email: "unique:users,email_address";
+```
+
+#### exists:table,column
+
+The field under validation must exist on a given database table.
+If the column option is not specified, the field name will be used.
+
+**Currently supports Mongodb and MySql only**
+
+```node
+//validation rule
+email: 'exists:users,email_address
 ```
 
 #### alpha
 
 The field under validation must be entirely alphabetic characters.
 
-#### alpha_dash
+#### alphaDash
 
 The field under validation may have alpha-numeric characters, as well as dashes and underscores.
 
-#### alpha_num
+#### alphaNum
 
 The field under validation must be entirely alpha-numeric characters.
 
@@ -82,7 +136,7 @@ The field under validation must be entirely alpha-numeric characters.
 
 The field under validation must be able to be cast as a boolean. Accepted input are `true, false, 1, 0, "1",`and `"0"`.
 
-#### date_equals:date
+#### dateEquals:date
 
 The field under validation must be equal to the given date.
 
@@ -90,25 +144,13 @@ The field under validation must be equal to the given date.
 
 The field under validation must be numeric and must have an exact length of value.
 
-#### digits_between:min,max
+#### digitsBetween:min,max
 
 The field under validation must be numeric and must have a length between the given min and max.
 
 #### email
 
 The field under validation must be formatted as an e-mail address.
-
-#### exists:table
-
-The field under validation must exist on a given database table.Request property name should same name as the coulmn name. For example:
-here "userId" is the request object property that hold the value of user's id. The same name sould use for request property and database coulmn name.
-
-**currantly supports Mongodb and MySql only**
-
-```node
-//validation rule
-'userId': 'exists:table',
-```
 
 #### gt:field
 
@@ -165,12 +207,6 @@ const messages = {
 };
 //create validation object.
 const validation = new Validation();
-
-//------------database validation -----------
-
-//With creation validation object you can pass your database connection with //database type such as 'mongodb' or 'mysql' or etc.
-// const validation = new Validation(conn,'mongodb');
-//then express validation now ready to validate with database as well.
 
 //defined validation rules. This is asynchronous method.
 validation

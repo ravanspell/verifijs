@@ -1,5 +1,7 @@
-const MongoClient = require('mongodb').MongoClient;
-const Util = require('../util');
+try {
+    MongoClient = require('mongodb').MongoClient;
+    Util = require('../util');
+} catch (ex) { }
 class MongoDb {
     constructor(connectionSettings) {
         this.connectionSettings = connectionSettings;
@@ -18,8 +20,12 @@ class MongoDb {
             console.log(error.message);
         }
     }
-    async uniqueValidation(dbCollection, userInputValue, customMessage, columnName) {
+    async uniqueValidation(dbCollectionAndColumn, request, customMessage, property) {
         try {
+            let [dbCollection, columnName] = dbCollectionAndColumn.split(',');
+            if (columnName == undefined)
+                columnName = property;
+            const userInputValue = request[property];
             if (this.dbConnection == null)
                 this.dbConnection = await this.connection();
             const collection = this.dbConnection.collection(dbCollection);
@@ -35,8 +41,12 @@ class MongoDb {
         }
     }
 
-    async existsValidation(dbCollection, userInputValue, customMessage, columnName) {
+    async existsValidation(dbCollectionAndColumn, request, customMessage, property) {
         try {
+            let [dbCollection, columnName] = dbCollectionAndColumn.split(',');
+            if (columnName == undefined)
+                columnName = property;
+            const userInputValue = request[property];
             if (this.dbConnection == null)
                 this.dbConnection = await this.connection();
             const collection = this.dbConnection.collection(dbCollection);
