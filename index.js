@@ -14,6 +14,7 @@ class Validation {
         try {
             let errorArry = [];
             for (const property in checkObj) {
+                this.bail = false;
                 let check = checkObj[property].split('|');
                 for (let type of check) {
                     if (type.includes(':')) {
@@ -22,16 +23,22 @@ class Validation {
                         //check validation rule        
                         this.validateValidationRules(func);
                         let validationState = await this[`${func}Validation`](amount, request, customMessage, property);
-                        if (!validationState.status)
+                        if (!validationState.status) {
                             errorArry.push(validationState.message);
+                            // stop validation further if validation is failed.
+                            if (this.bail) break;
+                        }
                     }
                     if (!type.includes(':')) {
                         let customMessage = this.messageProcessor(messages, property, type);
                         //check validation rule        
                         this.validateValidationRules(type);
                         let validationState = await this[`${type}Validation`](request, property, customMessage);
-                        if (!validationState.status)
+                        if (!validationState.status) {
                             errorArry.push(validationState.message);
+                            // stop validation further if validation is failed.
+                            if (this.bail) break;
+                        }
                     }
                 }
             }
@@ -408,6 +415,7 @@ class Validation {
 
     async bailValidation(date, value, customMessage) {
         this.bail = true;
+        return { status: true };
     }
 
     validateValidationRules(rule) {
@@ -449,7 +457,7 @@ class Validation {
     /**
      * @param {Object} dbConnectionSettings mongodb dbConnection settings 
      * {
-     * url: "*********",
+     * url: "*********"
      * }  
      */
     initMongoDbConnection(dbConnectionSettings = null) {
