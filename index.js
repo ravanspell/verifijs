@@ -118,7 +118,6 @@ class Validation {
         }
         return { status: true };
     }
-
     async notInValidation(setOfTerms, request, customMessage, property) {
         //get user input value from the request
         let value = request[property];
@@ -229,7 +228,6 @@ class Validation {
         }
         return { status: true };
     }
-
     async ltValidation(amount, request, customMessage, property) {
         //get user input value from the request
         const value = request[property];
@@ -286,7 +284,6 @@ class Validation {
         }
         return { status: true };
     }
-
     async gteValidation(amount, request, customMessage, property) {
         //get user input value from the request
         let value = request[property];
@@ -305,7 +302,6 @@ class Validation {
         }
         return { status: true };
     }
-
     async sizeValidation(amount, request, customMessage, property) {
         //get user input value from the request
         let value = request[property];
@@ -325,7 +321,6 @@ class Validation {
         }
         return { status: true };
     }
-
     async digitsValidation(amount, request, customMessage, property) {
         //get user input value from the request
         console.log(request)
@@ -339,7 +334,6 @@ class Validation {
         }
         return { status: true };
     }
-
     async dateEqualsValidation(date, request, customMessage, property) {
         date = new Date(date);
         //get user input value from the request
@@ -350,7 +344,6 @@ class Validation {
         }
         return { status: true };
     }
-
     async beforeValidation(date, request, customMessage, property) {
         date = new Date(date);
         //get user input value from the request
@@ -361,7 +354,6 @@ class Validation {
         }
         return { status: true };
     }
-
     async beforeOrEqualValidation(date, request, customMessage, property) {
         date = new Date(date);
         //get user input value from the request
@@ -372,7 +364,6 @@ class Validation {
         }
         return { status: true };
     }
-
     async distinctValidation(request, property, customMessage) {
         const userInput = request[property];
         if (new Set(userInput).size !== userInput.length) {
@@ -381,7 +372,6 @@ class Validation {
         };
         return { status: true };
     }
-
     async includesValidation(setOfTerms, request, customMessage, property) {
         //get user input value from the request
         let value = request[property];
@@ -400,24 +390,26 @@ class Validation {
         }
         return { status: true };
     }
-
-    /**
-     * function isLatitude(lat) {
-        return isFinite(lat) && Math.abs(lat) <= 90;
-        }
-
-        function isLongitude(lng) {
-        return isFinite(lng) && Math.abs(lng) <= 180;
-        }
-     *  
-     * 
-     */
-
+    async latValidation(request, property, customMessage) {
+        const latitude = request[property];
+        if (!(isFinite(latitude) && Math.abs(latitude) <= 90)) {
+            let defaultErrorMessage = "Error: Invalid latitude value";
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        };
+        return { status: true };
+    }
+    async lngValidation(request, property, customMessage) {
+        const longtitude = request[property];
+        if (!(isFinite(longtitude) && Math.abs(longtitude) <= 180)) {
+            let defaultErrorMessage = "Error: Invalid longtitude value";
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        };
+        return { status: true };
+    }
     async bailValidation(date, value, customMessage) {
         this.bail = true;
         return { status: true };
     }
-
     validateValidationRules(rule) {
         const check = this.__proto__.hasOwnProperty(`${rule}Validation`);
         const check2 = this.hasOwnProperty(`${rule}Validation`);
@@ -432,7 +424,6 @@ class Validation {
     validateRegExp(regexp) {
         return new RegExp(regexp);
     }
-
     // database validations
     /**
      * @param {Object} dbConnectionSettings mysql dbConnection settings 
