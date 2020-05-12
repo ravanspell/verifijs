@@ -1,4 +1,4 @@
-# express-validation
+# express-validation v1.0.0
 
 Light weight node js validation library.
 
