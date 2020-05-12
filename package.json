@@ -1,7 +1,7 @@
 {
-  "name": "validation",
+  "name": "express-validation",
   "version": "1.0.0",
-  "description": "Agilent and light weight java script validation library for dummies. ",
+  "description": "Light weight node.js validation library",
   "main": "index.js",
   "scripts": {
     "test": "mocha Validation.test.js",
@@ -10,20 +10,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ravanspell/js-validation.git"
+    "url": "git+https://github.com/ravanspell/express-validation.git"
   },
   "author": "ravanspell",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ravanspell/js-validation/issues"
+    "url": "https://github.com/ravanspell/express-validation/issues"
   },
-  "homepage": "https://github.com/ravanspell/js-validation#readme",
+  "homepage": "https://github.com/ravanspell/express-validation#readme",
   "devDependencies": {
     "mocha": "^7.0.1",
     "nodemon": "^2.0.2"
   },
-  "dependencies": {
-    "mongodb": "^3.5.7",
-    "mysql": "^2.18.1"
-  }
+  "dependencies": {}
 }
