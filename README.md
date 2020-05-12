@@ -1,10 +1,6 @@
 # express-validation
 
-Light weight java script/node js validation library.
-
-### Installation
-
-express-validation still under development thus installation is not possible so far as a npm library. But you can clone this repository and use it anyway.Try it is open source.
+Light weight node js validation library.
 
 ## Contributing
 
@@ -25,7 +21,7 @@ express-validation is validation library that inspired by laravel freamwork.
 
 ## Validation Rules
 
-| [required](#required) | [size](#size) | [string](#string)| [unique(DataBase)](#uniquetable) | [alpha](#alpha) | [alphaDash](#alphadash) |[database_validation_rules](#database-validation-rules-uniqueexists) | [alphaNum](#alphanum) | [boolean](#boolean) | [dateEquals](#dateequalsdate) | [digits](#digitsvalue) | [digits](#digitsvalue) | [digitsBetween](#digitsbetweenminmax) | [email](#email) | [graterThan](#gtfield) | [graterThanOrEqual](#gtefield) | [in](#invalue1valie2) | [json](#json) | [lessThan](#ltfield) | [regExp](#regexppattern) | [lessThanOrEqual](#ltefield)
+| [required](#required) | [size](#size) |[min](#minvalue) | [max](#maxvalue) | [string](#string)| [unique(DataBase)](#uniquetable) | [alpha](#alpha) | [alphaDash](#alphadash) |[database_validation_rules](#database-validation-rules-uniqueexists) | [alphaNum](#alphanum) | [boolean](#boolean) | [dateEquals](#dateequalsdate) | [digits](#digitsvalue) | [digits](#digitsvalue) | [between](#betweenminmax) | [digitsBetween](#digitsbetweenminmax) | [email](#email) | [graterThan](#gtfield) | [graterThanOrEqual](#gtefield) | [in](#invalue1valie2...)|[notIn](#notinvalue1valie2...) | [json](#json) | [lessThan](#ltfield) | [regExp](#regexppattern) | [lessThanOrEqual](#ltefield) | [dateEquals](#dateequalsdate)| [before(date)](#beforedate)| [beforeOrEqual(date)](#beforeorequaldate) | [bail](#bail) | [distinct](#distinct) | [includes](#includes) |
 
 #### required
 
@@ -49,6 +45,14 @@ The field under validation must have a size matching the given value. For string
 // Validate that an array has exactly 5 elements...
 'tags' : 'array|size:5';
 ```
+
+#### min:value
+
+The field under validation must have a minimum value. Strings, numerics, arrays are evaluated in the same fashion as the [size](#size) rule.
+
+#### max:value
+
+The field under validation must be less than or equal to a maximum value. Strings, numerics, arrays are evaluated in the same fashion as the [size](#size) rule.
 
 #### string
 
@@ -160,9 +164,17 @@ The field under validation must be greater than the given field. The two fields 
 
 The field under validation must be greater than or equal to the given field. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the size rule.
 
-#### in:value1,valie2
+#### in:value1,valie2,...
 
 The field under validation must be included in the given list of values.
+
+```node
+ term: 'in:yes,no,maybe',
+```
+
+#### not_in:value1,valie2,...
+
+The field under validation must not be included in the given list of values.
 
 #### json
 
@@ -180,12 +192,56 @@ The field under validation must match the given regular expression.
 
 The field under validation must be less than or equal to the given field. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the size rule.
 
-## Proposed Usage
+#### dateEquals:date
 
-express-validation is light weight java script/Node js validation library It can be use with Node js, express java script server less (AWS,Azure, etc).
+The field under validation must be equal to the given date.
 
 ```node
-const Validation = require("./express-validation");
+date: 'dateEquals:1994-02-23',
+```
+
+#### before:date
+
+The field under validation must be a value preceding the given date.
+
+#### beforeOrEqual:date
+
+The field under validation must be a value preceding or equal to the given date.
+
+#### bail
+
+Stop running validation rules after the first validation failure. Suppose you have defined sevaral validations for each data property.
+
+```node
+ name: 'bail|required|string|max:30|regExp:[a-zA-Z ]|alphaDash',
+ age: 'bail|required|integer',
+```
+
+normally, express validation gives all validation error messages at once.but when you specifiy `bail` for each property first validation falier stop evaluate other validation rules for each property.then it will move to next property to validation.
+Example: when `name` property's `max` validation fails, bail stop validate rest of validation rules and jump to `age` property.
+
+#### distinct
+
+When working with arrays, the field under validation must not have any duplicate values.
+
+#### includes
+
+includes evauate strings has spesific phase.for instance you want to allow mail addresses such as gmail,yahoo only `includes` able to use specify them.
+
+```node
+ email: 'required|email|includes:@gmail.com,@hotmail.com',
+```
+
+#### between:min,max
+
+The field under validation must have a size between the given min and max. Strings, numerics, arrays are evaluated in the same fashion as the [size](#size) rule.
+
+## Proposed Usage
+
+express-validation is light weight java script/Node js validation library It can be use with Node js, express , server less (AWS,Azure, etc).
+
+```node
+const Validation = require("express-validation");
 // the request object that include data which submitted by the user.
 let reqObj = {
   name: "kalo",
@@ -209,6 +265,7 @@ const messages = {
 const validation = new Validation();
 
 //defined validation rules. This is asynchronous method.
+//or reqObj.body
 validation
   .check(
     reqObj,
@@ -230,10 +287,10 @@ validation
   });
 ```
 
-Above example shows the proposed example usage of js-validation.
+Above example shows the proposed example usage of express-validation.
 
 ```node
-const Validation = require("./express-validation");
+const Validation = require("express-validation");
 ```
 
 import validation library 'the standerd way'
@@ -251,7 +308,7 @@ let reqObj = {
 };
 ```
 
-'reqObj' is the object that include values that need to validate. this may be a 'post' request or your own reqObj.
+'reqObj' is the object that include values that need to validate. this may be a 'post' request or your own reqObj(sometimes this can be req.body).
 
 ```node
 {

@@ -2,7 +2,7 @@ const Validation = require('.');
 
 let reqObj = {
     name: "Ical survey-2019",
-    first_name: "ireshan",
+    first_name: "ireshan pathirana",
     age: 45,
     address: 'No234Knnimahara',
     obj: '{"name":"kalo"}',
@@ -46,21 +46,19 @@ const messages = {
 // });
 
 const validation = new Validation();
-validation.initMongoDbConnection({
-    url: "mongodb+srv://ireshandj2:0724472890@cluster0-2dsaz.mongodb.net/dhananjayatrades",
-});
+
 validation.check(reqObj, {
-    first_name: 'required|string|max:8|regExp:[a-zA-Z ]',
+    first_name: 'bail|required|string|max:8|regExp:[a-zA-Z ]|in:yes,no,maybe',
     name: 'required|string|max:30|regExp:[a-zA-Z ]|alphaDash',
     age: 'required|integer',
     frequency: 'digitsBetween:34,50',
     address: 'required|string',
-    person: 'max:3',
+    person: 'max:2',
     obj: 'required|json',
     email: 'required|email|includes:@gmail.com,@hotmail.com',
     is_enable: 'boolean',
     term: 'in:yes,no,maybe',
-    barcode: 'exists:orders,barcode',
+    //barcode: 'exists:orders,barcode',
     size: 'lt:40|gt:19',
     amount: 'distinct|gt:3',
     mobile: 'digits:9',
