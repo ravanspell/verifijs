@@ -19,6 +19,96 @@ express-validation is validation library that inspired by laravel freamwork.
 - It allow use even database based validations. For instance : If you want to check some data wether already in the database or not express validation allow check value by simply define a schema.
 - It currantly support only mongodb database validations. But as soon as possible it will support other database manamagent systems as well.
 
+## Sample Usage
+
+express-validation is light weight java script/Node js validation library It can be use with Node js, express , server less (AWS,Azure, etc).
+
+```node
+const Validation = require("express-validation");
+// the request object that include data which submitted by the user.
+let reqObj = {
+  name: "kalo",
+  age: 56,
+  address: "No234Knnimahara",
+  obj: '{"name":"kalo"}',
+  email: "ireshandj2@gmail.com",
+  id: "f1277d16-5cb9-43f6-95ce-a5e22e12cdaa",
+  is_enable: true,
+  term: "Yes",
+};
+
+//express-validation allows to defined your own validation error messages.
+const messages = {
+  first_name_required: "First name is required",
+  is_enable_boolean: "is enable must be true or false",
+  name_required: "This porparty is required",
+  name_alpha: "Name must be include letters and numbers",
+};
+//create validation object.
+const validation = new Validation();
+
+//defined validation rules. This is asynchronous method.
+//or reqObj.body
+validation
+  .check(
+    reqObj,
+    {
+      first_name: "required|string|max:30|regExp:[a-zA-Z ]",
+      name: "required|string|max:30|regExp:[a-zA-Z ]|alpha",
+      age: "required|integer",
+      address: "required|string",
+      obj: "required|json",
+      email: "required|email",
+      id: "uuid",
+      is_enable: "boolean",
+      term: "in:yes,no,maybe",
+    },
+    messages
+  )
+  .then((result) => {
+    console.log(result);
+  });
+```
+
+Above example shows the proposed example usage of express-validation.
+
+```node
+const Validation = require("express-validation");
+```
+
+import validation library 'the standerd way'
+
+```node
+let reqObj = {
+  name: "kalo",
+  age: 56,
+  address: "No234Knnimahara",
+  obj: '{"name":"kalo"}',
+  email: "ireshandj2@gmail.com",
+  id: "f1277d16-5cb9-43f6-95ce-a5e22e12cdaa",
+  is_enable: true,
+  term: "Yes",
+};
+```
+
+'reqObj' is the object that include values that need to validate. this may be a 'post' request or your own reqObj(sometimes this can be req.body).
+
+```node
+{
+    first_name: 'required|string|max:30|regExp:[a-zA-Z ]',
+    name: 'required|string|max:30|regExp:[a-zA-Z ]|alpha',
+    age: 'required|integer',
+    address: 'required|string',
+    obj: 'required|json',
+    email: 'required|email',
+    id: 'uuid',
+    is_enable: 'boolean',
+    term: 'in:yes,no,maybe',
+}
+```
+
+You can specify validation parameters separated by '|'. Remember you have to use same key values that used in reqObj that you already defined.
+
 ## Validation Rules
 
 | [required](#required) | [size](#size) |[min](#minvalue) | [max](#maxvalue) | [string](#string)| [unique(DataBase)](#uniquetable) | [alpha](#alpha) | [alphaDash](#alphadash) |[database_validation_rules](#database-validation-rules-uniqueexists) | [alphaNum](#alphanum) | [boolean](#boolean) | [dateEquals](#dateequalsdate) | [digits](#digitsvalue) | [digits](#digitsvalue) | [between](#betweenminmax) | [digitsBetween](#digitsbetweenminmax) | [email](#email) | [graterThan](#gtfield) | [graterThanOrEqual](#gtefield) | [in](#invalue1valie2...)|[notIn](#notinvalue1valie2...) | [json](#json) | [lessThan](#ltfield) | [regExp](#regexppattern) | [lessThanOrEqual](#ltefield) | [dateEquals](#dateequalsdate)| [before(date)](#beforedate)| [beforeOrEqual(date)](#beforeorequaldate) | [bail](#bail) | [distinct](#distinct) | [includes](#includes) |
@@ -235,96 +325,6 @@ includes evauate strings has spesific phase.for instance you want to allow mail 
 #### between:min,max
 
 The field under validation must have a size between the given min and max. Strings, numerics, arrays are evaluated in the same fashion as the [size](#size) rule.
-
-## Proposed Usage
-
-express-validation is light weight java script/Node js validation library It can be use with Node js, express , server less (AWS,Azure, etc).
-
-```node
-const Validation = require("express-validation");
-// the request object that include data which submitted by the user.
-let reqObj = {
-  name: "kalo",
-  age: 56,
-  address: "No234Knnimahara",
-  obj: '{"name":"kalo"}',
-  email: "ireshandj2@gmail.com",
-  id: "f1277d16-5cb9-43f6-95ce-a5e22e12cdaa",
-  is_enable: true,
-  term: "Yes",
-};
-
-//express-validation allows to defined your own validation error messages.
-const messages = {
-  first_name_required: "First name is required",
-  is_enable_boolean: "is enable must be true or false",
-  name_required: "This porparty is required",
-  name_alpha: "Name must be include letters and numbers",
-};
-//create validation object.
-const validation = new Validation();
-
-//defined validation rules. This is asynchronous method.
-//or reqObj.body
-validation
-  .check(
-    reqObj,
-    {
-      first_name: "required|string|max:30|regExp:[a-zA-Z ]",
-      name: "required|string|max:30|regExp:[a-zA-Z ]|alpha",
-      age: "required|integer",
-      address: "required|string",
-      obj: "required|json",
-      email: "required|email",
-      id: "uuid",
-      is_enable: "boolean",
-      term: "in:yes,no,maybe",
-    },
-    messages
-  )
-  .then((result) => {
-    console.log(result);
-  });
-```
-
-Above example shows the proposed example usage of express-validation.
-
-```node
-const Validation = require("express-validation");
-```
-
-import validation library 'the standerd way'
-
-```node
-let reqObj = {
-  name: "kalo",
-  age: 56,
-  address: "No234Knnimahara",
-  obj: '{"name":"kalo"}',
-  email: "ireshandj2@gmail.com",
-  id: "f1277d16-5cb9-43f6-95ce-a5e22e12cdaa",
-  is_enable: true,
-  term: "Yes",
-};
-```
-
-'reqObj' is the object that include values that need to validate. this may be a 'post' request or your own reqObj(sometimes this can be req.body).
-
-```node
-{
-    first_name: 'required|string|max:30|regExp:[a-zA-Z ]',
-    name: 'required|string|max:30|regExp:[a-zA-Z ]|alpha',
-    age: 'required|integer',
-    address: 'required|string',
-    obj: 'required|json',
-    email: 'required|email',
-    id: 'uuid',
-    is_enable: 'boolean',
-    term: 'in:yes,no,maybe',
-}
-```
-
-You can specify validation parameters separated by '|'. Remember you have to use same key values that used in reqObj that you already defined.
 
 ### Customizing The Error Messages
 
