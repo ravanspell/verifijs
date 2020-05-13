@@ -1,30 +1,24 @@
-# express-validation v1.0.0
+# verifijs v1.0.0
 
 Light weight node js validation library.
 
-## Contributing
+## Why verifijs?
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change or new additions.
+verifijs is validation library that inspired by laravel freamwork.
 
-Please make sure to update tests as appropriate.
+- verifijs is very light weight node.js validation library written in java script.
+- verifijs use very limited number of dependencies. (It is useing database driver packges such as mysql,mongodb only) The good news is you only need to install either of this database driver which means if you use mysql database you only need to install mysql npm driver.
+- verifijs define validation enable defined chained validation rule schema.It allow use multiple validations to single input.
 
-## Why express-validation?
-
-express-validation is validation library that inspired by laravel freamwork.
-
-- Express validation is very light weight validation library.
-- Express validation use very limited number of dependencies. (It is useing database driver packges such as mysql,mongodb only) The good news is you only need to install either of this database driver which means if you use mysql database you only need to install mysql npm driver.
-- Express validation define validation enable defined chained validation rule schema.It allow use multiple validations to single input.
-
-- It allow use even database based validations. For instance : If you want to check some data wether already in the database or not express validation allow check value by simply define a schema.
+- It allow use even database based validations. For instance : If you want to check some data wether already in the database or not verifijs allow check value by simply define a schema.
 - It currantly support only mongodb database validations. But as soon as possible it will support other database manamagent systems as well.
 
 ## Sample Usage
 
-express-validation is light weight java script/Node js validation library It can be use with Node js, express , server less (AWS,Azure, etc).
+verifijs is light weight java script/Node js validation library It can be use with Node js, express , server less (AWS,Azure, etc).
 
 ```node
-const Validation = require("express-validation");
+const Validation = require("verifijs");
 // the request object that include data which submitted by the user.
 let reqObj = {
   name: "kalo",
@@ -37,7 +31,7 @@ let reqObj = {
   term: "Yes",
 };
 
-//express-validation allows to defined your own validation error messages.
+//verifijs allows to defined your own validation error messages.
 const messages = {
   first_name_required: "First name is required",
   is_enable_boolean: "is enable must be true or false",
@@ -70,10 +64,10 @@ validation
   });
 ```
 
-Above example shows the proposed example usage of express-validation.
+Above example shows the proposed example usage of verifijs.
 
 ```node
-const Validation = require("express-validation");
+const Validation = require("verifijs");
 ```
 
 import validation library 'the standerd way'
@@ -111,7 +105,7 @@ You can specify validation parameters separated by '|'. Remember you have to use
 
 ## Validation Rules
 
-| [required](#required) | [size](#size) |[min](#minvalue) | [max](#maxvalue) | [string](#string)| [unique(DataBase)](#uniquetable) | [alpha](#alpha) | [alphaDash](#alphadash) |[database_validation_rules](#database-validation-rules-uniqueexists) | [alphaNum](#alphanum) | [boolean](#boolean) | [dateEquals](#dateequalsdate) | [digits](#digitsvalue) | [digits](#digitsvalue) | [between](#betweenminmax) | [digitsBetween](#digitsbetweenminmax) | [email](#email) | [graterThan](#gtfield) | [graterThanOrEqual](#gtefield) | [in](#invalue1valie2...)|[notIn](#notinvalue1valie2...) | [json](#json) | [lessThan](#ltfield) | [regExp](#regexppattern) | [lessThanOrEqual](#ltefield) | [dateEquals](#dateequalsdate)| [before(date)](#beforedate)| [beforeOrEqual(date)](#beforeorequaldate) | [bail](#bail) | [distinct](#distinct) | [includes](#includes) |
+[alpha](#alpha) | [alphaNum](#alphanum) | [alphaDash](#alphadash) | [bail](#bail) |[before(date)](#beforedate)| [beforeOrEqual(date)](#beforeorequaldate) | [boolean](#boolean) | [between](#betweenminmax) | [distinct](#distinct) | [database_validation_rules](#database-validation-rules-uniqueexists) | [dateEquals](#dateequalsdate) | [digits](#digitsvalue) | [digits](#digitsvalue) | [digitsBetween](#digitsbetweenminmax) | [dateEquals](#dateequalsdate)| [email](#email) | [graterThan](#gtfield) | [graterThanOrEqual](#gtefield) | [in](#invalue1valie2...)| [includes](#includes) | [json](#json) | [lessThanOrEqual](#ltefield) | [min](#minvalue) | [max](#maxvalue) | [lessThan](#ltfield) | [notIn](#notinvalue1valie2...) | [required](#required) | [regExp](#regexppattern) | [string](#string) | [size](#sizevalue)
 
 #### required
 
@@ -138,11 +132,11 @@ The field under validation must have a size matching the given value. For string
 
 #### min:value
 
-The field under validation must have a minimum value. Strings, numerics, arrays are evaluated in the same fashion as the [size](#size) rule.
+The field under validation must have a minimum value. Strings, numerics, arrays are evaluated in the same fashion as the [size](#sizevalue) rule.
 
 #### max:value
 
-The field under validation must be less than or equal to a maximum value. Strings, numerics, arrays are evaluated in the same fashion as the [size](#size) rule.
+The field under validation must be less than or equal to a maximum value. Strings, numerics, arrays are evaluated in the same fashion as the [size](#sizevalue) rule.
 
 #### string
 
@@ -287,7 +281,7 @@ The field under validation must be less than or equal to the given field. The tw
 The field under validation must be equal to the given date.
 
 ```node
-date: 'dateEquals:1994-02-23',
+date: 'dateEquals:1994-02-24',
 ```
 
 #### before:date
@@ -307,7 +301,7 @@ Stop running validation rules after the first validation failure. Suppose you ha
  age: 'bail|required|integer',
 ```
 
-normally, express validation gives all validation error messages at once.but when you specifiy `bail` for each property first validation falier stop evaluate other validation rules for each property.then it will move to next property to validation.
+normally, verifijs gives all validation error messages at once.but when you specifiy `bail` for each property first validation falier stop evaluate other validation rules for each property.then it will move to next property to validation.
 Example: when `name` property's `max` validation fails, bail stop validate rest of validation rules and jump to `age` property.
 
 #### distinct
