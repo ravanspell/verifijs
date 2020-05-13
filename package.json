@@ -1,5 +1,5 @@
 {
-  "name": "express-validation",
+  "name": "verifijs",
   "version": "1.0.0",
   "description": "Light weight node.js validation library",
   "main": "index.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ravanspell/express-validation.git"
+    "url": "git+https://github.com/ravanspell/verifijs.git"
   },
   "author": "ravanspell",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ravanspell/express-validation/issues"
+    "url": "https://github.com/ravanspell/verifijs/issues"
   },
-  "homepage": "https://github.com/ravanspell/express-validation#readme",
+  "homepage": "https://github.com/ravanspell/verifijs#readme",
   "devDependencies": {
     "mocha": "^7.0.1",
     "nodemon": "^2.0.2"
