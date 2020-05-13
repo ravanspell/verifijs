@@ -9,10 +9,12 @@ const MongoDb = require('./database/mongodb');
 class Validation {
     constructor() {
         this.bail = false;
+        this.bailAll = false;
     }
     async check(request, checkObj, messages = {}) {
         try {
             let errorArry = [];
+            main_loop:
             for (const property in checkObj) {
                 this.bail = false;
                 let check = checkObj[property].split('|');
@@ -27,6 +29,7 @@ class Validation {
                             errorArry.push(validationState.message);
                             // stop validation further if validation is failed.
                             if (this.bail) break;
+                            if (this.bailAll) break main_loop;
                         }
                     }
                     if (!type.includes(':')) {
@@ -38,6 +41,7 @@ class Validation {
                             errorArry.push(validationState.message);
                             // stop validation further if validation is failed.
                             if (this.bail) break;
+                            if (this.bailAll) break main_loop;
                         }
                     }
                 }
