@@ -406,6 +406,16 @@ class Validation {
         };
         return { status: true };
     }
+
+    async arrayValidation(request, property, customMessage) {
+        const userInput = request[property];
+        if (!Array.isArray(userInput)) {
+            let defaultErrorMessage = "Error: Invalid array";
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        };
+        return { status: true };
+    }
+
     async bailValidation(date, value, customMessage) {
         this.bail = true;
         return { status: true };

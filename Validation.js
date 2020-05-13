@@ -60,7 +60,7 @@ validation.check(reqObj, {
     term: 'in:yes,no,maybe',
     //barcode: 'exists:orders,barcode',
     size: 'lt:40|gt:19',
-    amount: 'distinct|gt:3',
+    amount: 'array|distinct|gt:3',
     mobile: 'digits:9',
     nic: 'digits:9',
     birthDate: 'dateEquals:1994-02-23',
