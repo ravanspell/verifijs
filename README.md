@@ -105,7 +105,7 @@ You can specify validation parameters separated by '|'. Remember you have to use
 
 ## Validation Rules
 
-[alpha](#alpha) | [alphaNum](#alphanum) | [alphaDash](#alphadash) | [bail](#bail) |[before(date)](#beforedate)| [beforeOrEqual(date)](#beforeorequaldate) | [boolean](#boolean) | [between](#betweenminmax) | [distinct](#distinct) | [database_validation_rules](#database-validation-rules-uniqueexists) | [dateEquals](#dateequalsdate) | [digits](#digitsvalue) | [digits](#digitsvalue) | [digitsBetween](#digitsbetweenminmax) | [dateEquals](#dateequalsdate)| [email](#email) | [graterThan](#gtfield) | [graterThanOrEqual](#gtefield) | [in](#invalue1valie2...)| [includes](#includes) | [json](#json) | [lessThanOrEqual](#ltefield) | [min](#minvalue) | [max](#maxvalue) | [lessThan](#ltfield) | [notIn](#notinvalue1valie2...) | [required](#required) | [regExp](#regexppattern) | [string](#string) | [size](#sizevalue)
+[alpha](#alpha) | [alphaNum](#alphanum) | [alphaDash](#alphadash) | [bail](#bail) |[before(date)](#beforedate)| [beforeOrEqual(date)](#beforeorequaldate) | [boolean](#boolean) | [between](#betweenminmax) | [distinct](#distinct) | [database_validation_rules](#database-validation-rules-uniqueexists) | [dateEquals](#dateequalsdate) | [digits](#digitsvalue) | [digits](#digitsvalue) | [digitsBetween](#digitsbetweenminmax) | [dateEquals](#dateequalsdate)| [email](#email) | [graterThan](#gtfield) | [graterThanOrEqual](#gtefield) | [in](#invalue1valie2...)| [includes](#includes) | [json](#json) | [lessThanOrEqual](#ltefield) | [min](#minvalue) | [max](#maxvalue) | [lessThan](#ltfield) | [notIn](#notinvalue1valie2...) | [required](#required) | [regExp](#regexppattern) | [string](#string) | [size](#sizevalue) | [uuid](#uuid)
 
 #### required
 
@@ -319,6 +319,10 @@ includes evauate strings has spesific phase.for instance you want to allow mail 
 #### between:min,max
 
 The field under validation must have a size between the given min and max. Strings, numerics, arrays are evaluated in the same fashion as the [size](#size) rule.
+
+#### uuid
+
+The field under validation must be a valid RFC 4122 (version 1, 3, 4, or 5) universally unique identifier (UUID).
 
 ### Customizing The Error Messages
 
