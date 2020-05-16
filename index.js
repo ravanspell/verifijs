@@ -424,6 +424,9 @@ class Validation {
         this.bail = true;
         return { status: true };
     }
+    setBailAll(status) {
+        this.bailAll = status;
+    }
     validateValidationRules(rule) {
         const check = this.__proto__.hasOwnProperty(`${rule}Validation`);
         const check2 = this.hasOwnProperty(`${rule}Validation`);

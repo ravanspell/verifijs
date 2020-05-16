@@ -47,7 +47,7 @@ const messages = {
 
 const validation = new Validation();
 //set bailAll to true for stop validation when one validation fails
-validation.bailAll = false;
+validation.setBailAll(true);
 validation.check(reqObj, {
     first_name: 'required|string|max:8|regExp:[a-zA-Z ]',
     name: 'required|string|max:30|regExp:[a-zA-Z ]|alphaDash',

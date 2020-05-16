@@ -306,11 +306,11 @@ Example: when `name` property's `max` validation fails, bail stop validate rest 
 
 #### bailAll
 
-bail all is not a validation rule. It's a property. If you set bailAll property value as `true`, verifijs stop validation when one validation fails and give you the error message.default value is `false`.
+bail all is not a validation rule. It's a method.If you set bailAll property value as `true`, verifijs stop validation when one validation fails and give you the error message.default value is `false`.
 
 ```node
 const validation = new Validation();
-validation.bailAll = true;
+validation.setBailAll(true);
 ```
 
 #### distinct
