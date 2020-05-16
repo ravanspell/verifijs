@@ -105,7 +105,7 @@ You can specify validation parameters separated by '|'. Remember you have to use
 
 ## Validation Rules
 
-[alpha](#alpha) | [alphaNum](#alphanum) | [alphaDash](#alphadash) | [bail](#bail) |[before(date)](#beforedate)| [beforeOrEqual(date)](#beforeorequaldate) | [boolean](#boolean) | [between](#betweenminmax) | [distinct](#distinct) | [database_validation_rules](#database-validation-rules-uniqueexists) | [dateEquals](#dateequalsdate) | [digits](#digitsvalue) | [digits](#digitsvalue) | [digitsBetween](#digitsbetweenminmax) | [dateEquals](#dateequalsdate)| [email](#email) | [graterThan](#gtfield) | [graterThanOrEqual](#gtefield) | [in](#invalue1valie2...)| [includes](#includes) | [json](#json) | [lessThanOrEqual](#ltefield) | [min](#minvalue) | [max](#maxvalue) | [lessThan](#ltfield) | [notIn](#notinvalue1valie2...) | [required](#required) | [regExp](#regexppattern) | [string](#string) | [size](#sizevalue) | [uuid](#uuid)
+[alpha](#alpha) | [alphaNum](#alphanum) | [alphaDash](#alphadash) | [array](#array) | [bail](#bail) | [before(date)](#beforedate)| [beforeOrEqual(date)](#beforeorequaldate) | [boolean](#boolean) | [between](#betweenminmax) | [distinct](#distinct) | [database_validation_rules](#database-validation-rules-uniqueexists) | [dateEquals](#dateequalsdate) | [digits](#digitsvalue) | [digits](#digitsvalue) | [digitsBetween](#digitsbetweenminmax) | [dateEquals](#dateequalsdate)| [email](#email) | [graterThan](#gtfield) | [graterThanOrEqual](#gtefield) | [in](#invalue1valie2...)| [includes](#includes) | [json](#json) | [lessThanOrEqual](#ltefield) |[latitude](#lat)| [longitude](#lng) | [min](#minvalue) | [max](#maxvalue) | [lessThan](#ltfield) | [notIn](#notinvalue1valie2...) | [required](#required) | [regExp](#regexppattern) | [string](#string) | [size](#sizevalue) | [setBailAll](#setbailall) | [uuid](#uuid)
 
 #### required
 
@@ -304,6 +304,15 @@ Stop running validation rules after the first validation failure. Suppose you ha
 normally, verifijs gives all validation error messages at once.but when you specifiy `bail` for each property first validation falier stop evaluate other validation rules for each property.then it will move to next property to validation.
 Example: when `name` property's `max` validation fails, bail stop validate rest of validation rules and jump to `age` property.
 
+#### setBailAll
+
+bail all is not a validation rule. It's a method.If you set bailAll property value as `true`, verifijs stop validation when one validation fails and give you the error message.default value is `false`.
+
+```node
+const validation = new Validation();
+validation.setBailAll(true);
+```
+
 #### distinct
 
 When working with arrays, the field under validation must not have any duplicate values.
@@ -324,10 +333,22 @@ The field under validation must have a size between the given min and max. Strin
 
 The field under validation must be a valid RFC 4122 (version 1, 3, 4, or 5) universally unique identifier (UUID).
 
+#### array
+
+The field under validation must be a java script `array`.
+
+#### lat
+
+Validate geo locations - latitude validations.
+
+#### lng
+
+Validate geo locations - longitude validations.
+
 ### Customizing The Error Messages
 
 You can define your own error messages instead of existing messages.
-pass the message object into check method just like above.here you have tow options
+pass the message object into check method just like above.here you have two options
 
 1. Apply some message effect to all criteria
 
@@ -351,5 +372,3 @@ const messages = {
 here you need to specify data field (name) and criteria (required) then error
 message will add only to that specific data field required criteria. data field and
 criteria should separate by using "\_".
-
-**This sample usage not only show all the validation parameters. We are working on full documentation.**

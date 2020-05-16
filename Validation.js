@@ -46,9 +46,10 @@ const messages = {
 // });
 
 const validation = new Validation();
-
+//set bailAll to true for stop validation when one validation fails
+validation.setBailAll(true);
 validation.check(reqObj, {
-    first_name: 'bail|required|string|max:8|regExp:[a-zA-Z ]|in:yes,no,maybe',
+    first_name: 'required|string|max:8|regExp:[a-zA-Z ]',
     name: 'required|string|max:30|regExp:[a-zA-Z ]|alphaDash',
     age: 'required|integer',
     frequency: 'digitsBetween:34,50',
@@ -60,7 +61,7 @@ validation.check(reqObj, {
     term: 'in:yes,no,maybe',
     //barcode: 'exists:orders,barcode',
     size: 'lt:40|gt:19',
-    amount: 'distinct|gt:3',
+    amount: 'array|distinct|gt:3',
     mobile: 'digits:9',
     nic: 'digits:9',
     birthDate: 'dateEquals:1994-02-23',
