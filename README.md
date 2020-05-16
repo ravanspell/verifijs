@@ -105,7 +105,7 @@ You can specify validation parameters separated by '|'. Remember you have to use
 
 ## Validation Rules
 
-[alpha](#alpha) | [alphaNum](#alphanum) | [alphaDash](#alphadash) | [array](#array) | [bail](#bail) | [before(date)](#beforedate)| [beforeOrEqual(date)](#beforeorequaldate) | [boolean](#boolean) | [between](#betweenminmax) | [distinct](#distinct) | [database_validation_rules](#database-validation-rules-uniqueexists) | [dateEquals](#dateequalsdate) | [digits](#digitsvalue) | [digits](#digitsvalue) | [digitsBetween](#digitsbetweenminmax) | [dateEquals](#dateequalsdate)| [email](#email) | [graterThan](#gtfield) | [graterThanOrEqual](#gtefield) | [in](#invalue1valie2...)| [includes](#includes) | [json](#json) | [lessThanOrEqual](#ltefield) | [min](#minvalue) | [max](#maxvalue) | [lessThan](#ltfield) | [notIn](#notinvalue1valie2...) | [required](#required) | [regExp](#regexppattern) | [string](#string) | [size](#sizevalue) | [setBailAll](#setbailall) | [uuid](#uuid)
+[alpha](#alpha) | [alphaNum](#alphanum) | [alphaDash](#alphadash) | [array](#array) | [bail](#bail) | [before(date)](#beforedate)| [beforeOrEqual(date)](#beforeorequaldate) | [boolean](#boolean) | [between](#betweenminmax) | [distinct](#distinct) | [database_validation_rules](#database-validation-rules-uniqueexists) | [dateEquals](#dateequalsdate) | [digits](#digitsvalue) | [digits](#digitsvalue) | [digitsBetween](#digitsbetweenminmax) | [dateEquals](#dateequalsdate)| [email](#email) | [graterThan](#gtfield) | [graterThanOrEqual](#gtefield) | [in](#invalue1valie2...)| [includes](#includes) | [json](#json) | [lessThanOrEqual](#ltefield) |[latitude](#lat)| [longitude](#lng) | [min](#minvalue) | [max](#maxvalue) | [lessThan](#ltfield) | [notIn](#notinvalue1valie2...) | [required](#required) | [regExp](#regexppattern) | [string](#string) | [size](#sizevalue) | [setBailAll](#setbailall) | [uuid](#uuid)
 
 #### required
 
@@ -336,6 +336,14 @@ The field under validation must be a valid RFC 4122 (version 1, 3, 4, or 5) univ
 #### array
 
 The field under validation must be a java script `array`.
+
+#### lat
+
+Validate geo locations - latitude validations.
+
+#### lng
+
+Validate geo locations - longitude validations.
 
 ### Customizing The Error Messages
 
