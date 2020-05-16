@@ -1,6 +1,15 @@
-# verifijs v1.0.0
+# verifijs
 
 Light weight node js validation library.
+
+### Release Notes 1.0.1
+
+#### New Features
+
+- array validations
+- latitude values validations
+- longitude values validations
+- setBailAll() function to stop validation when one validation rule fails.
 
 ## Why verifijs?
 
