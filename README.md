@@ -348,7 +348,7 @@ Validate geo locations - longitude validations.
 ### Customizing The Error Messages
 
 You can define your own error messages instead of existing messages.
-pass the message object into check method just like above.here you have tow options
+pass the message object into check method just like above.here you have two options
 
 1. Apply some message effect to all criteria
 
@@ -372,5 +372,3 @@ const messages = {
 here you need to specify data field (name) and criteria (required) then error
 message will add only to that specific data field required criteria. data field and
 criteria should separate by using "\_".
-
-**This sample usage not only show all the validation parameters. We are working on full documentation.**
