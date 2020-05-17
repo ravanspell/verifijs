@@ -1,6 +1,6 @@
 {
   "name": "verifijs",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Light weight node.js validation library",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,22 @@
     "type": "git",
     "url": "git+https://github.com/ravanspell/verifijs.git"
   },
+  "keywords": [
+    "validation",
+    "validator",
+    "data validation",
+    "input validation",
+    "input validator",
+    "form validation",
+    "form validator",
+    "node validator",
+    "laravel",
+    "validator for js",
+    "validator for node.js",
+    "express",
+    "aws lambda",
+    "azure functions"
+  ],
   "author": "ravanspell",
   "license": "ISC",
   "bugs": {
