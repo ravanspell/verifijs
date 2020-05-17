@@ -29,6 +29,7 @@ npm i verifijs
 
 verifijs is validation library that inspired by laravel freamwork.
 
+- provides over 35 frequently used validation rules.
 - verifijs is very light weight node.js validation library written in java script.
 - verifijs use very limited number of dependencies. (It is useing database driver packges such as mysql,mongodb only) The good news is you only need to install either of this database driver which means if you use mysql database you only need to install mysql npm driver.
 - verifijs define validation enable defined chained validation rule schema.It allow use multiple validations to single input.
