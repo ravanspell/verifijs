@@ -16,6 +16,7 @@ let reqObj = {
     amount: [5, 4, 3, 1],
     mobile: 724472890,
     birthDate: '1994-02-23',
+    affectSince: '2020-02-12',
     nic: 940552850,
     _id: "84155",
     backDate: '1994-02-22'
@@ -65,7 +66,8 @@ validation.check(reqObj, {
     mobile: 'digits:9',
     nic: 'digits:9',
     birthDate: 'dateEquals:1994-02-23',
-    backDate: "before:1994-02-23"
+    backDate: "before:1994-02-23",
+    affectSince: "after:2020-02-11"
 }, messages).then(result => {
     console.log(result);
 });

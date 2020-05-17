@@ -1,15 +1,29 @@
 # verifijs
 
+[![NPM version][npm-image]][npm-url]
+[![Known Vulnerabilities](https://snyk.io/test/npm/verifijs/badge.svg)](https://snyk.io/test/npm/verifijs)
+
+[npm-url]: https://www.npmjs.com/package/verifijs
+
 Light weight node js validation library.
 
-### Release Notes 1.0.1
+## Installation
 
-#### New Features
+```shell
+npm i verifijs
+```
 
-- array validations
-- latitude values validations
-- longitude values validations
-- setBailAll() function to stop validation when one validation rule fails.
+### Release Notes 1.0.2
+
+#### New Features!
+
+- [array](#array) validations.
+- [latitude](#lat) values validations.
+- [longitude](#lng) values validations.
+- [setBailAll](#setbailall) function to stop validation when one validation rule fails.
+- [after(date)](#afterdate) validation.
+- [same](#samefield) validation.
+- [examples](#sample-usage) express js examples.
 
 ## Why verifijs?
 
@@ -24,9 +38,11 @@ verifijs is validation library that inspired by laravel freamwork.
 
 ## Sample Usage
 
+[verifijs express js examples] here you can find and clone live examples of usage of verifijs.
+
 verifijs is light weight java script/Node js validation library It can be use with Node js, express , server less (AWS,Azure, etc).
 
-```node
+```javascript
 const Validation = require("verifijs");
 // the request object that include data which submitted by the user.
 let reqObj = {
@@ -75,13 +91,13 @@ validation
 
 Above example shows the proposed example usage of verifijs.
 
-```node
+```javascript
 const Validation = require("verifijs");
 ```
 
 import validation library 'the standerd way'
 
-```node
+```javascript
 let reqObj = {
   name: "kalo",
   age: 56,
@@ -96,7 +112,7 @@ let reqObj = {
 
 'reqObj' is the object that include values that need to validate. this may be a 'post' request or your own reqObj(sometimes this can be req.body).
 
-```node
+```javascript
 {
     first_name: 'required|string|max:30|regExp:[a-zA-Z ]',
     name: 'required|string|max:30|regExp:[a-zA-Z ]|alpha',
@@ -114,7 +130,7 @@ You can specify validation parameters separated by '|'. Remember you have to use
 
 ## Validation Rules
 
-[alpha](#alpha) | [alphaNum](#alphanum) | [alphaDash](#alphadash) | [array](#array) | [bail](#bail) | [before(date)](#beforedate)| [beforeOrEqual(date)](#beforeorequaldate) | [boolean](#boolean) | [between](#betweenminmax) | [distinct](#distinct) | [database_validation_rules](#database-validation-rules-uniqueexists) | [dateEquals](#dateequalsdate) | [digits](#digitsvalue) | [digits](#digitsvalue) | [digitsBetween](#digitsbetweenminmax) | [dateEquals](#dateequalsdate)| [email](#email) | [graterThan](#gtfield) | [graterThanOrEqual](#gtefield) | [in](#invalue1valie2...)| [includes](#includes) | [json](#json) | [lessThanOrEqual](#ltefield) |[latitude](#lat)| [longitude](#lng) | [min](#minvalue) | [max](#maxvalue) | [lessThan](#ltfield) | [notIn](#notinvalue1valie2...) | [required](#required) | [regExp](#regexppattern) | [string](#string) | [size](#sizevalue) | [setBailAll](#setbailall) | [uuid](#uuid)
+[alpha](#alpha) | [alphaNum](#alphanum) | [alphaDash](#alphadash) | [array](#array) |[after(date)](#afterdate)| [bail](#bail) | [before(date)](#beforedate)| [beforeOrEqual(date)](#beforeorequaldate) | [boolean](#boolean) | [between](#betweenminmax) | [distinct](#distinct) | [database_validation_rules](#database-validation-rules-uniqueexists) | [dateEquals](#dateequalsdate) | [digits](#digitsvalue) | [digits](#digitsvalue) | [digitsBetween](#digitsbetweenminmax) | [dateEquals](#dateequalsdate)| [email](#email) | [graterThan](#gtfield) | [graterThanOrEqual](#gtefield) | [in](#invalue1valie2...)| [includes](#includes) | [json](#json) | [lessThanOrEqual](#ltefield) |[latitude](#lat)| [longitude](#lng) | [min](#minvalue) | [max](#maxvalue) | [lessThan](#ltfield) | [notIn](#notinvalue1valie2...) | [required](#required) | [regExp](#regexppattern) | [string](#string) | [size](#sizevalue) | [same](#samefield) | [setBailAll](#setbailall) | [uuid](#uuid)
 
 #### required
 
@@ -128,7 +144,7 @@ The field under validation must be present in the input data and not empty. A fi
 
 The field under validation must have a size matching the given value. For string data, value corresponds to the number of characters. For numeric data, value corresponds to a given integer value (the attribute must also have the numeric or integer rule). For an array, size corresponds to the count of the array. Let's look at some examples:
 
-```node
+```javascript
 // Validate that a string is exactly 12 characters long...
 'title': 'size:12';
 
@@ -157,24 +173,28 @@ Database validation rules helps to validate your input data against data that st
 
 if you are using mysql database, you need to install manually mysql node.js drivers using below npm command.
 
-`npm i mysql@2.18.1`
+```shell
+npm i mysql@2.18.1
+```
 
 if you are using mongodb, you need to install manually mongodb node.js drivers using below npm command.
 
-`npm i mongodb@3.5.7`
+```shell
+npm i mongodb@3.5.7
+```
 
 **_NOTE: If you don't intend to use below validations (unique,exists) You don't need to install any theired party library._**
 
 Now you need to initiate database connection.
 
-```node
+```javascript
 // Validation object creation
 const validation = new Validation();
 ```
 
 if you use mongo db
 
-```node
+```javascript
 validation.initMongoDbConnection({
   url: "url to your mongodb",
 });
@@ -182,7 +202,7 @@ validation.initMongoDbConnection({
 
 if you use mysql
 
-```node
+```javascript
 validation.initMysqlConnection({
   host: "host",
   user: "username",
@@ -200,7 +220,7 @@ The `column` option may be used to specify the field's corresponding database `c
 
 **Currently supports Mongodb and MySql only**
 
-```node
+```javascript
 //validation rule
 email: "unique:users,email_address";
 ```
@@ -212,7 +232,7 @@ If the column option is not specified, the field name will be used.
 
 **Currently supports Mongodb and MySql only**
 
-```node
+```javascript
 //validation rule
 email: 'exists:users,email_address
 ```
@@ -261,7 +281,7 @@ The field under validation must be greater than or equal to the given field. The
 
 The field under validation must be included in the given list of values.
 
-```node
+```javascript
  term: 'in:yes,no,maybe',
 ```
 
@@ -289,8 +309,22 @@ The field under validation must be less than or equal to the given field. The tw
 
 The field under validation must be equal to the given date.
 
-```node
+```javascript
 date: 'dateEquals:1994-02-24',
+```
+
+#### after:date
+
+The field under validation must be a value after a given date.
+
+```shell
+'start_date' : 'required|after:2010-02-24'
+```
+
+Instead of passing a date string, you may specify another field to compare against the date.
+
+```shell
+'finish_date' : 'required|after:start_date'
 ```
 
 #### before:date
@@ -305,7 +339,7 @@ The field under validation must be a value preceding or equal to the given date.
 
 Stop running validation rules after the first validation failure. Suppose you have defined sevaral validations for each data property.
 
-```node
+```javascript
  name: 'bail|required|string|max:30|regExp:[a-zA-Z ]|alphaDash',
  age: 'bail|required|integer',
 ```
@@ -317,7 +351,7 @@ Example: when `name` property's `max` validation fails, bail stop validate rest 
 
 bail all is not a validation rule. It's a method.If you set bailAll property value as `true`, verifijs stop validation when one validation fails and give you the error message.default value is `false`.
 
-```node
+```javascript
 const validation = new Validation();
 validation.setBailAll(true);
 ```
@@ -330,7 +364,7 @@ When working with arrays, the field under validation must not have any duplicate
 
 includes evauate strings has spesific phase.for instance you want to allow mail addresses such as gmail,yahoo only `includes` able to use specify them.
 
-```node
+```javascript
  email: 'required|email|includes:@gmail.com,@hotmail.com',
 ```
 
@@ -354,6 +388,23 @@ Validate geo locations - latitude validations.
 
 Validate geo locations - longitude validations.
 
+#### same:field
+
+The given field must match the field under validation.
+
+```javascript
+'password': 'required|string|same:confirmPassword',
+'confirmPassword': 'required|string'
+```
+
+same validation rules not only supports strings.It will support:
+
+- Arrays
+- Objects
+- String
+- Integers
+- Floats
+
 ### Customizing The Error Messages
 
 You can define your own error messages instead of existing messages.
@@ -361,7 +412,7 @@ pass the message object into check method just like above.here you have two opti
 
 1. Apply some message effect to all criteria
 
-```node
+```javascript
 const messages = {
   // max is the criteria
   max: "you cannot use more than max value",
@@ -372,7 +423,7 @@ this messages will apply all "max" validation checks.
 
 2. Apply some message to specific data field.
 
-```node
+```javascript
 const messages = {
   name_required: "This property is required",
 };
@@ -381,3 +432,5 @@ const messages = {
 here you need to specify data field (name) and criteria (required) then error
 message will add only to that specific data field required criteria. data field and
 criteria should separate by using "\_".
+
+[verifijs express js examples]: https://github.com/ravanspell/verifijs-examples

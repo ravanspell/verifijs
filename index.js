@@ -179,7 +179,6 @@ class Validation {
     }
     async booleanValidation(request, property, customMessage) {
         let validationValue = request[property];
-        console.log('is enable value is', !validationValue == true);
         if (!(validationValue === 1 || validationValue === 0 || validationValue === true || validationValue === false)) {
             let defaultErrorMessage = `Error: ${property} has invalid boolean value`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
@@ -318,7 +317,6 @@ class Validation {
         } else if (typeof value === 'string') {
             size = value.length;
         }
-        console.log('size', size, 'amount', amount);
         if (amount != size) {
             let defaultErrorMessage = `Error: ${property} value is not equal to ${value}`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
@@ -327,11 +325,9 @@ class Validation {
     }
     async digitsValidation(amount, request, customMessage, property) {
         //get user input value from the request
-        console.log(request)
         let value = request[property];
         amount = parseInt(amount);
         value = value.toString().length;
-        console.log('amount', amount, 'length', value);
         if (amount != value) {
             let defaultErrorMessage = `Error: ${property} number does not have ${amount} digits`;
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
@@ -417,6 +413,34 @@ class Validation {
             let defaultErrorMessage = "Error: Invalid array";
             return Util.validationErrorInjector(defaultErrorMessage, customMessage);
         };
+        return { status: true };
+    }
+
+    async sameValidation(anotherField, request, customMessage, property) {
+        //get user input value from the request.
+        let value = request[property];
+        //get user input of specified property.
+        let anotherFieldValue = request[anotherField];
+
+        if (JSON.stringify(value) !== JSON.stringify(anotherFieldValue)) {
+            let defaultErrorMessage = `Error: ${property} property value does not match to ${anotherField} property value`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        }
+        return { status: true };
+    }
+
+    async afterValidation(date, request, customMessage, property) {
+        let dataField = request[date];
+        if (dataField != undefined) {
+            date = dataField;
+        }
+        date = new Date(date);
+        //get user input value from the request
+        let value = new Date(request[property]);
+        if (date.getTime() >= value.getTime()) {
+            let defaultErrorMessage = `Error: ${property} date not after`;
+            return Util.validationErrorInjector(defaultErrorMessage, customMessage);
+        }
         return { status: true };
     }
 
