@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/ravanspell/verifijs#readme",
   "devDependencies": {
-    "mocha": "^7.0.1",
+    "mocha": "^10.2.0",
     "nodemon": "^2.0.2"
   },
   "dependencies": {}
